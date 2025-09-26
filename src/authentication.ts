@@ -532,6 +532,53 @@ const UserProfile = () => {
 export default UserProfile;
 */
 
+export async function api_PullAllImageDataForPetBSelection(
+  token: string,
+  hash: string | null,
+) {
+
+  try {
+    const response_obj = await fetch(
+      `/api/ai/users/images`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          hash: hash,
+        }),
+      },
+    );
+
+    if (response_obj.ok) {
+      const data = await response_obj.json();
+      return {
+        success: true,
+        status_code: response_obj.status,
+        data: data,// TODO define type
+        message: 'OK',
+      }
+    } else {
+      return {
+        success: false,
+        status_code: response_obj.status,
+        data: await response_obj.text(),
+        message: 'failed to get image list',
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      status_code: null,
+      data: null,
+      message: `An error occurred: ${error}`,
+      error: error,
+    }
+  }
+}
+
 // const api: ApiContract = {
 const api = {
   storeAccessToken,
@@ -545,6 +592,7 @@ const api = {
   api_create_new_pet,
   api_get_pet_info,
   api_upload_pet_image,
+  api_PullAllImageDataForPetBSelection,
 };
 
 export default api;

@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { api_matching_record_store_rating, api_pets_matching, getAccessToken } from "../authentication";
 import { useEffect, useState } from "react";
 import type { MatchingPetInfo } from "../typing";
+import SampleOwnImageSelector from "../users/SampleOwnImageSelector";
 
 function SwipeCard({ profile, onSwipe }: { profile: MatchingPetInfo; onSwipe: (direction: 'left' | 'right') => void }) {
     const [isDragging, setIsDragging] = useState(false);
@@ -120,12 +121,14 @@ export function OffspringGeneratorModal({
 }) {
     const [isLoading, setIsLoading] = useState(false);
     // const [generatedImage, setGeneratedImage] = useState<string | null>(null);
-
-    const [imageAUrl, setImageAUrl] = useState(parentA.profile_image_url || '');
+    const imageAUrl = parentA.profile_image_url;
+    // const [imageAUrl, setImageAUrl] = useState(parentA.profile_image_url || '');
     const [imageBUrl, setImageBUrl] = useState('');
 
     const [resultImageUrl, setResultImageUrl] = useState<string | null>(null);
     const access_token = getAccessToken();
+
+    const [show_popup_image_selector, set_show_popup_image_selector] = useState(false);
 
     const handleGenerate = async () => {
         if (!imageAUrl || !imageBUrl) {
@@ -179,29 +182,46 @@ export function OffspringGeneratorModal({
                 </button>
                 <h2 className="text-2xl mb-4">Generate Offspring for {parentA.name}</h2>
 
+                {/* Show image A and image B side by side */}
+                <div className="flex justify-center items-center gap-6 mb-4">
+                    <div className="flex flex-col items-center">
+                        <span className="mb-2 text-gray-700">Image A</span>
+                        <img
+                            src={imageAUrl ?? undefined}
+                            alt="Parent A"
+                            className="w-32 h-32 object-cover rounded border"
+                        />
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <span className="mb-2 text-gray-700">Image B</span>
+                        <img
+                            src={imageBUrl ?? undefined} // TODO show placeholder component if null
+                            alt="Parent B"
+                            className="w-32 h-32 object-cover rounded border cursor-pointer"
+                            onClick={() => set_show_popup_image_selector(true)}
+                        />
+                        <button
+                            className="mt-2 text-blue-500 underline"
+                            onClick={() => set_show_popup_image_selector(true)}
+                        >
+                            {imageBUrl ? "Change" : "Select"} Image B
+                        </button>
+                    </div>
+                </div>
+
+                {/* Popup image selector */}
+                {show_popup_image_selector && (
+                    <SampleOwnImageSelector
+                        other_image_hash={null} // TODO pass other user's image hash
+                        onSelect={url => {
+                            setImageBUrl(url);
+                            set_show_popup_image_selector(false);
+                        }}
+                        onClose={() => set_show_popup_image_selector(false)}
+                    />
+                )}
+
                 <div className="space-y-4">
-                    <div>
-                        <label className="block mb-1 font-semibold">Parent A Image URL:</label>
-                        <input
-                            type="text"
-                            value={imageAUrl}
-                            onChange={(e) => setImageAUrl(e.target.value)}
-                            className="w-full border border-gray-300 rounded px-3 py-2"
-                            placeholder="Enter image URL for Parent A"
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block mb-1 font-semibold">Parent B Image URL:</label>
-                        <input
-                            type="text"
-                            value={imageBUrl}
-                            onChange={(e) => setImageBUrl(e.target.value)}
-                            className="w-full border border-gray-300 rounded px-3 py-2"
-                            placeholder="Enter image URL for Parent B"
-                        />
-                    </div>
-
                     <button
                         onClick={handleGenerate}
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
