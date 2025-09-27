@@ -226,6 +226,57 @@ export async function api_upload_pet_image(
     }
   }
 }
+export async function api_upload_user_image(
+  token: string,
+  image_file: File,
+) {
+  try {
+    const form_data = new FormData();
+    form_data.append('name', image_file.name);
+    form_data.append('file', image_file);
+
+    const response_obj = await fetch(
+      `/api/users/images/upload`,
+      {
+        method: 'POST',
+        headers: {
+          // 'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: form_data,
+        // body: image_file,
+        // body: JSON.stringify({
+        //   name: pet_name,
+        // }),
+      },
+    );
+
+    if (response_obj.ok) {
+      const data = await response_obj.json();
+      return {
+        success: true,
+        status_code: response_obj.status,
+        data: data,// TODO define type
+        message: 'OK',
+      }
+    } else {
+      return {
+        success: false,
+        status_code: response_obj.status,
+        data: await response_obj.text(),
+        message: 'Failed to get pet info',
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      status_code: null,
+      data: null,
+      message: `An error occurred: ${error}`,
+      error: error,
+    }
+  }
+}
 
 export async function api_get_pet_info(token: string, pet_id: string) {
   try {

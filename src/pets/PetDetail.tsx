@@ -235,7 +235,11 @@ export default function PetDetail() {
                             }
 
                             console.log("Selected file:", file_obj);
-                            upload_file(file_obj);
+                            upload_file(file_obj)
+                                .finally(() => {
+                                    // reset input value so selecting the same file again will trigger change event
+                                    evt.target.value = "";
+                                });
                             // api_upload_pet_image(
                             //     access_token!,
                             //     petId!,

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
-import { api_PullAllImageDataForPetBSelection, getAccessToken } from "../authentication";
+import { api_PullAllImageDataForPetBSelection, api_upload_user_image, getAccessToken } from "../authentication";
 import { useEffect, useState } from "react";
+import type { PetImageInfo } from "../typing";
 
 export interface ImageInfo {
   id: number;
@@ -60,21 +61,106 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
 
     fetch_image_list();
   }, []);
+
+
+  const upload_file = async (file_obj: File) => {
+    let retval = await api_upload_user_image(
+      access_token!,
+      file_obj,
+    );
+
+    console.debug(retval);
+
+    if (retval.success) {
+      try {
+        let image_info: PetImageInfo = retval.data.image_info;
+        let image_url = image_info.url;
+        props.onSelect(image_url);
+      } catch (error) {
+        console.error("Error uploading image:");
+        console.error(error);
+        alert(`Error uploading image: ${error}`);
+        return;
+      }
+      // alert("Image uploaded successfully");
+    } else {
+      alert(`Failed to upload image: ${retval.message}`);
+    }
+  }
+
+  function triggle_upload_action(el: HTMLInputElement) {
+    console.log("Selected files:", el.files);
+    if (el.files == null) {
+      return;
+    }
+    if (el.files.length == 0) {
+      return;
+    }
+
+    let file_obj = el.files[0];
+    if (file_obj == null) {
+      return;
+    }
+
+    console.log("Selected file:", file_obj);
+    upload_file(file_obj).finally(() => {
+      // reset input value so selecting the same file again will trigger change event
+      el.value = "";
+    });
+  }
+
   return (
-    <div>
+    <div
+      style={{
+        display: "block",
+        position: "fixed",
+        top: "10vh",
+        left: "10vw",
+        width: "80vw",
+        height: "80vh",
+        backgroundColor: "black",
+        maxHeight: "80vh",
+        overflowY: "scroll",
+        zIndex: 1000, // TODO dynamic z-index as input argument
+      }}
+    >
       {(component_state == null) ? (
         <div>Loading...</div>
       ) : (
         <div>
           <div>
-            <button>upload new image | TODO</button>
+            <div className="container section">
+              <h2>upload new image from your device</h2>
+              <input
+                type="file"
+                accept="image/*"
+                id="ai_image_gen_input_upload_image"
+                onChange={(evt) => {
+                  console.debug(evt);
+                  triggle_upload_action(evt.target);
+                }}
+              />
+              <button onClick={async () => {
+                let input_elem = (document.getElementById("ai_image_gen_input_upload_image") as HTMLInputElement);
+                if (input_elem == null) {
+                  console.error("ai_image_gen_input_upload_image element not found");
+                  alert("ai_image_gen_input_upload_image element not found");
+                  return;
+                }
+
+                input_elem.click();
+                // triggle_upload_action(input_elem);
+              }}>upload</button>
+            </div>
             <button onClick={() => props.onClose()}>close</button>
           </div>
           <div id="pet_list">
             {component_state.pets.map((pet) => (
               <div key={pet.id} className="pet_item">
                 <h3>{pet.name}</h3>
-                <div className="image_list">
+                <div className="image_list"
+                  style={{ display: "flex", flexWrap: "wrap" }}
+                >
                   {pet.images.map((image) => (
                     <img
                       key={image.id}
@@ -88,7 +174,9 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
               </div>
             ))}
           </div>
-          <div id="user_image_list">
+          <div id="user_image_list"
+            style={{ display: "flex", flexWrap: "wrap" }}
+          >
             {component_state.user_images.map((image) => (
               <img
                 key={image.id}
