@@ -1,5 +1,8 @@
 import { useNavigate } from "react-router";
-import { api_PullAllImageDataForPetBSelection, getAccessToken } from "../authentication";
+import {
+  api_PullAllImageDataForPetBSelection,
+  getAccessToken,
+} from "../../authentication";
 import { useEffect, useState } from "react";
 
 export interface ImageInfo {
@@ -24,10 +27,13 @@ interface api_PullAllImageDataForPetBSelectionResponse {
   user_images: ImageInfo[];
 }
 
-export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProps) {
+export default function SampleOwnImageSelector(
+  props: SampleOwnImageSelectorProps
+) {
   const navigate = useNavigate();
   const access_token = getAccessToken();
-  const [component_state, set_component_state] = useState<api_PullAllImageDataForPetBSelectionResponse>();
+  const [component_state, set_component_state] =
+    useState<api_PullAllImageDataForPetBSelectionResponse>();
 
   useEffect(() => {
     if (access_token == null) {
@@ -39,7 +45,7 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
     async function fetch_image_list() {
       let retval = await api_PullAllImageDataForPetBSelection(
         access_token!,
-        props.other_image_hash,
+        props.other_image_hash
       );
 
       console.debug(retval);
@@ -62,7 +68,7 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
   }, []);
   return (
     <div>
-      {(component_state == null) ? (
+      {component_state == null ? (
         <div>Loading...</div>
       ) : (
         <div>
@@ -81,7 +87,11 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
                       src={image.url}
                       alt={`Pet ${pet.name} Image ${image.id}`}
                       onClick={() => props.onSelect(image.url)}
-                      style={{ cursor: "pointer", maxWidth: "150px", margin: "5px" }}
+                      style={{
+                        cursor: "pointer",
+                        maxWidth: "150px",
+                        margin: "5px",
+                      }}
                     />
                   ))}
                 </div>
@@ -102,5 +112,5 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
         </div>
       )}
     </div>
-  )
+  );
 }
