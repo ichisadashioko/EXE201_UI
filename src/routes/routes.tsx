@@ -1,12 +1,13 @@
 import type { ReactNode } from "react";
-import OnBoarding from "../components/onBoarding/OnBoarding";
-import Login from "../pages/Login";
 import Matching from "../pages/matching/Matching";
 import NewPet from "../pages/pets/NewPet";
 import PetDetail from "../pages/pets/PetDetail";
 import Signup from "../pages/Signup";
 import Home from "../pages/users/Home";
 import MainLayout from "../components/layout/MainLayout";
+// import Loading from "../pages/Loading";
+import OnBoarding from "../pages/OnBoarding";
+import Login from "../pages/Login";
 
 interface Route {
   path: string;
@@ -17,17 +18,7 @@ interface Route {
 export const routes: Route[] = [
   {
     path: "/",
-    component: Home,
-    layout: MainLayout,
-  },
-  {
-    path: "/login",
-    component: Login,
-    layout: null,
-  },
-  {
-    path: "/signup",
-    component: Signup,
+    component: OnBoarding,
     layout: null,
   },
   {
@@ -35,6 +26,17 @@ export const routes: Route[] = [
     component: OnBoarding,
     layout: null,
   },
+  {
+    path: "/login",
+    component: Login,
+    layout: null,
+  },
+  {
+    path: "/register",
+    component: Signup,
+    layout: null,
+  },
+
   {
     path: "/home",
     component: Home,

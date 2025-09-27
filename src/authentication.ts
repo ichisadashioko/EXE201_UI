@@ -20,9 +20,10 @@
 // import type { paths } from "./types/api.generated";
 
 // Constants for localStorage keys and API endpoints.
-const ACCESS_TOKEN_KEY = 'access_token';
+const ACCESS_TOKEN_KEY = "access_token";
 // const LOGIN_PATH = '/login'; // Adjust this to your login page path
 
+const URL = "http://localhost:5115";
 /**
  * Stores the access token in localStorage.
  * @param {string} token The JWT access token to store.
@@ -31,7 +32,7 @@ export const storeAccessToken = (token: string) => {
   try {
     localStorage.setItem(ACCESS_TOKEN_KEY, token);
   } catch (error) {
-    console.error('Failed to store access token:', error);
+    console.error("Failed to store access token:", error);
   }
 };
 
@@ -48,7 +49,7 @@ export async function api_login_with_email(email: string, password: string) {
     //         password: password,
     //     }
     // });
-    const response_obj = await fetch("/api/users/login_with_email", {
+    const response_obj = await fetch(`${URL}/api/users/login_with_email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,16 +62,16 @@ export async function api_login_with_email(email: string, password: string) {
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'OK',
-      }
+        data: data, // TODO define type
+        message: "OK",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'Failed to api_login_with_email',
-      }
+        message: "Failed to api_login_with_email",
+      };
     }
   } catch (error) {
     return {
@@ -79,46 +80,43 @@ export async function api_login_with_email(email: string, password: string) {
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
 
 export async function api_matching_record_store_rating(
   token: string,
   pet_id: number,
-  rating: number,
+  rating: number
 ) {
   try {
-    const response_obj = await fetch(
-      `/api/matching-records`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          pet_id: pet_id,
-          rating: rating,
-        }),
+    const response_obj = await fetch(`${URL}/api/matching-records`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    );
+      body: JSON.stringify({
+        pet_id: pet_id,
+        rating: rating,
+      }),
+    });
 
     if (response_obj.ok) {
       const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'OK',
-      }
+        data: data, // TODO define type
+        message: "OK",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'Failed to store matching rating',
-      }
+        message: "Failed to store matching rating",
+      };
     }
   } catch (error) {
     return {
@@ -127,41 +125,38 @@ export async function api_matching_record_store_rating(
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
 
 export async function api_pets_matching(token: string) {
   try {
-    const response_obj = await fetch(
-      `/api/pets/matching`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        // body: JSON.stringify({
-        //   name: pet_name,
-        // }),
+    const response_obj = await fetch(`${URL}/api/pets/matching`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    );
+      // body: JSON.stringify({
+      //   name: pet_name,
+      // }),
+    });
 
     if (response_obj.ok) {
       const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'OK',
-      }
+        data: data, // TODO define type
+        message: "OK",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'Failed to get pet info',
-      }
+        message: "Failed to get pet info",
+      };
     }
   } catch (error) {
     return {
@@ -170,34 +165,34 @@ export async function api_pets_matching(token: string) {
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
 
 export async function api_upload_pet_image(
   token: string,
   pet_id: string,
-  image_file: File,
+  image_file: File
 ) {
   try {
     const form_data = new FormData();
-    form_data.append('name', image_file.name);
-    form_data.append('file', image_file);
+    form_data.append("name", image_file.name);
+    form_data.append("file", image_file);
 
     const response_obj = await fetch(
-      `/api/pets/${pet_id}/images/upload`,
+      `${URL}/api/pets/${pet_id}/images/upload`,
       {
-        method: 'POST',
+        method: "POST",
         headers: {
           // 'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: form_data,
         // body: image_file,
         // body: JSON.stringify({
         //   name: pet_name,
         // }),
-      },
+      }
     );
 
     if (response_obj.ok) {
@@ -205,16 +200,16 @@ export async function api_upload_pet_image(
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'OK',
-      }
+        data: data, // TODO define type
+        message: "OK",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'Failed to get pet info',
-      }
+        message: "Failed to get pet info",
+      };
     }
   } catch (error) {
     return {
@@ -223,49 +218,43 @@ export async function api_upload_pet_image(
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
-export async function api_upload_user_image(
-  token: string,
-  image_file: File,
-) {
+export async function api_upload_user_image(token: string, image_file: File) {
   try {
     const form_data = new FormData();
-    form_data.append('name', image_file.name);
-    form_data.append('file', image_file);
+    form_data.append("name", image_file.name);
+    form_data.append("file", image_file);
 
-    const response_obj = await fetch(
-      `/api/users/images/upload`,
-      {
-        method: 'POST',
-        headers: {
-          // 'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: form_data,
-        // body: image_file,
-        // body: JSON.stringify({
-        //   name: pet_name,
-        // }),
+    const response_obj = await fetch(`${URL}/api/users/images/upload`, {
+      method: "POST",
+      headers: {
+        // 'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
-    );
+      body: form_data,
+      // body: image_file,
+      // body: JSON.stringify({
+      //   name: pet_name,
+      // }),
+    });
 
     if (response_obj.ok) {
       const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'OK',
-      }
+        data: data, // TODO define type
+        message: "OK",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'Failed to get pet info',
-      }
+        message: "Failed to get pet info",
+      };
     }
   } catch (error) {
     return {
@@ -274,41 +263,38 @@ export async function api_upload_user_image(
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
 
 export async function api_get_pet_info(token: string, pet_id: string) {
   try {
-    const response_obj = await fetch(
-      `/api/pets/${pet_id}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        // body: JSON.stringify({
-        //   name: pet_name,
-        // }),
+    const response_obj = await fetch(`${URL}/api/pets/${pet_id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    );
+      // body: JSON.stringify({
+      //   name: pet_name,
+      // }),
+    });
 
     if (response_obj.ok) {
       const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'OK',
-      }
+        data: data, // TODO define type
+        message: "OK",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'Failed to get pet info',
-      }
+        message: "Failed to get pet info",
+      };
     }
   } catch (error) {
     return {
@@ -317,41 +303,38 @@ export async function api_get_pet_info(token: string, pet_id: string) {
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
 
 export async function api_create_new_pet(token: string, pet_name: string) {
   try {
-    const response_obj = await fetch(
-      '/api/pets/new',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: pet_name,
-        }),
+    const response_obj = await fetch(`${URL}/api/pets/new`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    );
+      body: JSON.stringify({
+        name: pet_name,
+      }),
+    });
 
     if (response_obj.ok) {
       const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'Pet created successfully',
-      }
+        data: data, // TODO define type
+        message: "Pet created successfully",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'Failed to create pet',
-      }
+        message: "Failed to create pet",
+      };
     }
   } catch (error) {
     return {
@@ -360,38 +343,35 @@ export async function api_create_new_pet(token: string, pet_name: string) {
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
 
 export async function api_get_matches(token: string) {
   try {
-    const response_obj = await fetch(
-      '/api/matches',
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
+    const response_obj = await fetch(`${URL}/api/matches`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    );
+    });
 
     if (response_obj.ok) {
       const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'User profile retrieved successfully',
-      }
+        data: data, // TODO define type
+        message: "User profile retrieved successfully",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'Failed to retrieve user profile',
-      }
+        message: "Failed to retrieve user profile",
+      };
     }
   } catch (error) {
     return {
@@ -400,38 +380,35 @@ export async function api_get_matches(token: string) {
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
 
 export async function api_get_user_profile(token: string) {
   try {
-    const response_obj = await fetch(
-      '/api/users/me',
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
+    const response_obj = await fetch(`${URL}/api/users/me`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    );
+    });
 
     if (response_obj.ok) {
       const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'User profile retrieved successfully',
-      }
+        data: data, // TODO define type
+        message: "User profile retrieved successfully",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'Failed to retrieve user profile',
-      }
+        message: "Failed to retrieve user profile",
+      };
     }
   } catch (error) {
     return {
@@ -440,16 +417,19 @@ export async function api_get_user_profile(token: string) {
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
-export async function api_update_display_name(access_token: string, new_name: string) {
+export async function api_update_display_name(
+  access_token: string,
+  new_name: string
+) {
   try {
-    const response = await fetch('/api/users/name', {
-      method: 'POST',
+    const response = await fetch(`${URL}/api/users/name`, {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${access_token}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ display_name: new_name }),
     });
@@ -459,11 +439,14 @@ export async function api_update_display_name(access_token: string, new_name: st
     if (response.ok) {
       return { success: true, data: data };
     } else {
-      return { success: false, message: data.message || 'Failed to update name' };
+      return {
+        success: false,
+        message: data.message || "Failed to update name",
+      };
     }
   } catch (error) {
-    console.error('API call failed: api_update_display_name', error);
-    return { success: false, message: 'An unexpected error occurred.' };
+    console.error("API call failed: api_update_display_name", error);
+    return { success: false, message: "An unexpected error occurred." };
   }
 }
 /**
@@ -474,7 +457,7 @@ export const getAccessToken = () => {
   try {
     return localStorage.getItem(ACCESS_TOKEN_KEY);
   } catch (error) {
-    console.error('Failed to retrieve access token:', error);
+    console.error("Failed to retrieve access token:", error);
     return null;
   }
 };
@@ -486,7 +469,7 @@ export const removeAccessToken = () => {
   try {
     localStorage.removeItem(ACCESS_TOKEN_KEY);
   } catch (error) {
-    console.error('Failed to remove access token:', error);
+    console.error("Failed to remove access token:", error);
   }
 };
 
@@ -585,39 +568,35 @@ export default UserProfile;
 
 export async function api_PullAllImageDataForPetBSelection(
   token: string,
-  hash: string | null,
+  hash: string | null
 ) {
-
   try {
-    const response_obj = await fetch(
-      `/api/ai/users/images`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          hash: hash,
-        }),
+    const response_obj = await fetch(`${URL}/api/ai/users/images`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    );
+      body: JSON.stringify({
+        hash: hash,
+      }),
+    });
 
     if (response_obj.ok) {
       const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
-        data: data,// TODO define type
-        message: 'OK',
-      }
+        data: data, // TODO define type
+        message: "OK",
+      };
     } else {
       return {
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: 'failed to get image list',
-      }
+        message: "failed to get image list",
+      };
     }
   } catch (error) {
     return {
@@ -626,7 +605,7 @@ export async function api_PullAllImageDataForPetBSelection(
       data: null,
       message: `An error occurred: ${error}`,
       error: error,
-    }
+    };
   }
 }
 

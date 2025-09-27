@@ -5,8 +5,9 @@ import {
   getAccessToken,
   api_update_display_name,
 } from "../../authentication";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 import UsersMatchListView from "../../pages/matching/UsersMatchListView";
+import { useNavigate } from "react-router-dom";
 
 // Define the interface for a single Pet
 interface Pet {
@@ -49,7 +50,7 @@ interface UserProfile {
 
 // This component now takes the list of pets as a prop and renders them
 function PetList({ pets }: { pets: Pet[] }) {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   if (pets.length === 0) {
     return (
@@ -71,7 +72,7 @@ function PetList({ pets }: { pets: Pet[] }) {
         {pets.map((pet) => (
           <li
             key={pet.id}
-            onClick={() => navigate(`/pets/${pet.id}`)}
+            // onClick={() => navigate(`/pets/${pet.id}`)}
             style={{
               cursor: "pointer",
               marginBottom: "10px",
@@ -108,12 +109,12 @@ export default function Home() {
   const [user_profile, set_user_profile] = useState<UserProfile | null>(null);
   const navigate = useNavigate();
   const access_token = getAccessToken();
-  const [matches, set_matches] = useState<any[]>([]);
+  const [matches, set_matches] = useState([]);
   const [isEditingName, setIsEditingName] = useState(false);
   const [displayName, setDisplayName] = useState("");
 
   useEffect(() => {
-    if (access_token == null) {
+    if (access_token === null) {
       console.log("Access token is null, redirecting to login page");
       navigate("/login");
       return; // Return early

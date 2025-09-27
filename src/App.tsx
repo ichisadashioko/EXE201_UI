@@ -2,7 +2,6 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Fragment } from "react";
 
 import "./App.css";
-import Loading from "./components/common/Loading";
 import { ToastContainer } from "react-toastify";
 import { routes } from "./routes/routes";
 

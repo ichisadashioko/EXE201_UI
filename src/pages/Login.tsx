@@ -1,14 +1,18 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
 import api from "../authentication";
+import Logo from "../components/common/Logo";
+import Button from "../components/common/Button";
+import { Link } from "react-router-dom";
+import Success from "./common/Success";
 
-export default function Login() {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const [isSuccess, setIsSuccess] = useState(0);
+  // const navigate = useNavigate();
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async () => {
+    // event.preventDefault();
 
     api
       .api_login_with_email(email, password)
@@ -23,8 +27,7 @@ export default function Login() {
 
           api.storeAccessToken(access_token);
           console.debug("Access Token:", access_token);
-          // TODO how to redirect to home page?
-          navigate("/home");
+          setIsSuccess(1);
         } else {
           const error_message = `Login failed: ${retval.status_code} ${retval.message} - ${retval.data}`;
           console.error(error_message);
@@ -76,31 +79,63 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <h1>Login Page</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+    <section className="bg-home h-screen  flex flex-col gap-2 items-center justify-center ">
+      {isSuccess === 0 && (
+        <div className="p-5 w-full h-[70vh] flex flex-col justify-between ">
+          <Logo />
+          <div className="flex flex-col gap-3">
+            <h1 className="text-2xl text-[#343434] font-semibold">Đăng nhập</h1>
+            <div className="flex flex-col">
+              <label htmlFor="email">Tài khoản</label>
+              <input
+                type="email"
+                id="email"
+                value={email}
+                placeholder="Nhập số điện thoại"
+                onChange={(e) => setEmail(e.target.value)}
+                className="border border-neutral-500 px-3 py-2 rounded-3xl bg-white"
+                required
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="password">Mật khẩu</label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                placeholder="Nhập mật khẩu"
+                onChange={(e) => setPassword(e.target.value)}
+                className="border border-neutral-500 px-3 py-2 rounded-3xl bg-white"
+                required
+              />
+            </div>
+          </div>
+          <div className="text-right">
+            <Link to={"/login"} className="text-[#454699]">
+              <span className="underline">Quên mật khẩu?</span>
+            </Link>
+          </div>
+          <Button label="Đăng nhập" onClick={handleSubmit} />
+          <div className="flex justify-between">
+            <span className="border-b border-neutral-500 w-1/4 h-1/2"></span>
+            <p className="text-neutral-500">Hoặc đăng nhập với</p>
+            <span className="border-b border-neutral-500 w-1/4 h-1/2"></span>
+          </div>
+          <div className="text-center">
+            <p>
+              Bạn chưa có tài khoản?{" "}
+              <span>
+                <Link className="text-[#454699]" to={"/register"}>
+                  <span className="underline">Đăng ký ngay</span>{" "}
+                </Link>
+              </span>
+            </p>
+          </div>
         </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </div>
+      )}
+      {isSuccess === 1 ? <Success redirect="/home" /> : <></>}
+    </section>
   );
-}
+};
+
+export default Login;
