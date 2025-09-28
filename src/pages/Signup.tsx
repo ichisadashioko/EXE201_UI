@@ -3,6 +3,7 @@ import Logo from "../components/common/Logo";
 import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
 import Success from "./common/Success";
+import { URL } from "../authentication";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -10,7 +11,7 @@ export default function Signup() {
   const [isSuccess, setIsSuccess] = useState(0);
 
   const handleSubmit = async () => {
-    const response = await fetch("http://localhost:5115/api/users/create", {
+    const response = await fetch(`${URL}/api/users/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
