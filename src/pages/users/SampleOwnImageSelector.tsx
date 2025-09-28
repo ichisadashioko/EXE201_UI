@@ -7,6 +7,8 @@ import {
 import { useEffect, useState } from "react";
 import type { PetImageInfo } from "../../typing";
 
+import "./SampleOwnImageSelector.css"
+
 export interface ImageInfo {
   id: number;
   url: string;
@@ -114,16 +116,17 @@ export default function SampleOwnImageSelector(
 
   return (
     <div
+      className="image-selector-popup"
       style={{
-        display: "block",
-        position: "fixed",
-        top: "10vh",
-        left: "10vw",
-        width: "80vw",
-        height: "80vh",
-        backgroundColor: "black",
-        maxHeight: "80vh",
-        overflowY: "scroll",
+        // display: "block",
+        // position: "fixed",
+        // top: "10vh",
+        // left: "10vw",
+        // width: "80vw",
+        // height: "80vh",
+        // backgroundColor: "black",
+        // maxHeight: "80vh",
+        // overflowY: "scroll",
         zIndex: 1000, // TODO dynamic z-index as input argument
       }}
     >
@@ -144,6 +147,7 @@ export default function SampleOwnImageSelector(
                 }}
               />
               <button
+                className="button"
                 onClick={async () => {
                   const input_elem = document.getElementById(
                     "ai_image_gen_input_upload_image"
@@ -163,32 +167,31 @@ export default function SampleOwnImageSelector(
                 upload
               </button>
             </div>
-            <button onClick={() => props.onClose()}>close</button>
+            <button
+              className="button"
+              onClick={() => props.onClose()}>close</button>
           </div>
           <div id="pet_list">
-            {component_state.pets.map((pet) => (
-              <div key={pet.id} className="pet_item">
-                <h3>{pet.name}</h3>
-                <div
-                  className="image_list"
-                  style={{ display: "flex", flexWrap: "wrap" }}
-                >
-                  {pet.images.map((image) => (
-                    <img
-                      key={image.id}
-                      src={image.url}
-                      alt={`Pet ${pet.name} Image ${image.id}`}
-                      onClick={() => props.onSelect(image.url)}
-                      style={{
-                        cursor: "pointer",
-                        maxWidth: "150px",
-                        margin: "5px",
-                      }}
-                    />
-                  ))}
+            {component_state.pets
+              .filter((pet) => (pet.images.length > 0))
+              .map((pet) => (
+                <div key={pet.id} className="pet_item">
+                  <h3>{pet.name}</h3>
+                  <div
+                    className="image_list"
+                  >
+                    {pet.images.map((image) => (
+                      <img
+                        key={image.id}
+                        src={image.url}
+                        alt={`Pet ${pet.name} Image ${image.id}`}
+                        onClick={() => props.onSelect(image.url)}
+                        className="image-list-item"
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
           <div
             id="user_image_list"

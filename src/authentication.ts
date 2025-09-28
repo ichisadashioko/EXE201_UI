@@ -23,7 +23,8 @@
 const ACCESS_TOKEN_KEY = "access_token";
 // const LOGIN_PATH = '/login'; // Adjust this to your login page path
 
-export const URL = "http://localhost:5115";
+// export const URL = "http://localhost:5115";
+export const URL = "";
 /**
  * Stores the access token in localStorage.
  * @param {string} token The JWT access token to store.

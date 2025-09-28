@@ -2,7 +2,7 @@ import { useState } from "react";
 import api from "../authentication";
 import Logo from "../components/common/Logo";
 import Button from "../components/common/Button";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import Success from "./common/Success";
 
 const Login = () => {

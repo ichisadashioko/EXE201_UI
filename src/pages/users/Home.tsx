@@ -7,7 +7,7 @@ import {
 } from "../../authentication";
 // import { useNavigate } from "react-router";
 import UsersMatchListView from "../../pages/matching/UsersMatchListView";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 // Define the interface for a single Pet
 interface Pet {
@@ -16,7 +16,7 @@ interface Pet {
   description: string;
   profile_image_id: number | null;
   profile_image_url: string | null;
-  created_at: string; // Dates are typically strings in JSON
+  created_at: number;
 }
 
 // Define the interface for the User Profile, which contains an array of Pets
@@ -24,7 +24,7 @@ interface UserProfile {
   id: number;
   name: string | null;
   is_guest: boolean;
-  created_at: string; // Dates are typically strings in JSON
+  created_at: number;
   pets: Pet[];
 }
 
@@ -50,7 +50,7 @@ interface UserProfile {
 
 // This component now takes the list of pets as a prop and renders them
 function PetList({ pets }: { pets: Pet[] }) {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   if (pets.length === 0) {
     return (
@@ -66,18 +66,18 @@ function PetList({ pets }: { pets: Pet[] }) {
       <h2>Your Pets</h2>
       <ul
         style={{
-          border: "1px solid #f00",
+          // border: "1px solid #f00",
         }}
       >
         {pets.map((pet) => (
           <li
             key={pet.id}
-            // onClick={() => navigate(`/pets/${pet.id}`)}
+            onClick={() => navigate(`/pets/${pet.id}`)}
             style={{
               cursor: "pointer",
               marginBottom: "10px",
               listStyle: "none",
-              border: "1px solid #0f0",
+              // border: "1px solid #0f0",
             }}
           >
             {pet.profile_image_url && (

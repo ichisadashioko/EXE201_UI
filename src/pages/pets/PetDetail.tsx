@@ -12,7 +12,7 @@ import type { PetImageInfo } from "../../typing";
 interface PetPicture {
   id: number;
   url: string;
-  created_at: string;
+  created_at: number;
 }
 
 interface Pet {
@@ -184,7 +184,7 @@ export default function PetDetail() {
           {pet.images.map((pic) => (
             <div
               key={pic.id}
-              style={{ border: "1px solid #ccc", padding: "5px" }}
+              // style={{ border: "1px solid #ccc", padding: "5px" }}
             >
               <img
                 src={pic.url}
@@ -246,7 +246,11 @@ export default function PetDetail() {
               }
 
               console.log("Selected file:", file_obj);
-              upload_file(file_obj);
+              upload_file(file_obj).then(() => {
+                console.debug("upload_file done");
+                // set value to null so that the same file can be uploaded again if needed
+                evt.target.value = "";
+              });
               // api_upload_pet_image(
               //     access_token!,
               //     petId!,

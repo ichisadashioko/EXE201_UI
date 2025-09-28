@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Logo from "../components/common/Logo";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import Button from "../components/common/Button";
 import Success from "./common/Success";
 import { URL } from "../authentication";
@@ -28,33 +28,6 @@ export default function Signup() {
   };
 
   return (
-    // <div className="container">
-    //   <h1>Signup Page</h1>
-    //   <form onSubmit={handleSubmit}>
-    //     <div>
-    //       <label htmlFor="email">Email:</label>
-    //       <input
-    //         type="email"
-    //         id="email"
-    //         value={email}
-    //         onChange={(e) => setEmail(e.target.value)}
-    //         required
-    //       />
-    //     </div>
-    //     <div>
-    //       <label htmlFor="password">Password:</label>
-    //       <input
-    //         type="password"
-    //         id="password"
-    //         value={password}
-    //         onChange={(e) => setPassword(e.target.value)}
-    //         required
-    //       />
-    //     </div>
-    //     <button type="submit">Sign Up</button>
-    //   </form>
-    // </div>
-
     <section className="bg-home h-screen  flex flex-col gap-2 items-center justify-center ">
       {isSuccess === 0 && (
         <div className="p-5 w-full h-[70vh] flex flex-col justify-between ">

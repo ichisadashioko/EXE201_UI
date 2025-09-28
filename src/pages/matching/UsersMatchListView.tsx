@@ -41,7 +41,7 @@ function PetDisplay({ pet }: { pet: PetInfo }) {
           height: "80px",
           borderRadius: "50%",
           objectFit: "cover",
-          border: "2px solid #0f0",
+          // border: "2px solid #0f0",
         }}
       />
       <p style={{ margin: "5px 0 0 0", fontSize: "0.9em" }}>{pet.name}</p>
@@ -72,8 +72,10 @@ export default function UsersMatchListView({
         method: "POST",
         headers: { Authorization: `Bearer ${getAccessToken()}` },
       });
+      console.debug(response);
       if (response.ok) {
         const data = await response.json();
+        console.debug(data);
         navigate(`/chat/${data.chatThreadId}`); // Navigate to the chat view
       } else {
         console.error("Failed to initiate chat");

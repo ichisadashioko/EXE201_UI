@@ -1,7 +1,7 @@
 import { Container } from "react-bootstrap";
 import onBoardingData from "../data/onBoarding.json";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import Button from "../components/common/Button";
 import { getAccessToken } from "../authentication";
 

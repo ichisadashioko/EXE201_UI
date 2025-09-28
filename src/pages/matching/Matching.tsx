@@ -276,7 +276,7 @@ export default function Matching() {
 
     if (access_token == null) {
       console.error("Access token is null, cannot store matching record");
-      navigate("/login");
+      // navigate("/login");
       return;
     }
 
