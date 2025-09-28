@@ -20,7 +20,7 @@
   /* flex-wrap: wrap; */
   overflow-x: auto; /* Enables horizontal scrolling if needed */
   gap: 10px; /* This adds spacing between all items */
-  flexShrink: 0; /* Prevents the item from shrinking */
+  flex-shrink: 0; /* Prevents the item from shrinking */
 }
 
 .image-list-item {
