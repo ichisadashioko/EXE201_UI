@@ -12,7 +12,7 @@ const PetsList = ({ pets }: { pets: Pet[] }) => {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid h-[68vh] overflow-auto grid-cols-2 gap-4">
       {pets.map((pet) => (
         <PetsCard key={pet.id} pet={pet} />
       ))}

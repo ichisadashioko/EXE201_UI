@@ -6,13 +6,12 @@ import {
   api_update_display_name,
 } from "../../authentication";
 // import { useNavigate } from "react-router";
-import UsersMatchListView from "../../pages/matching/UsersMatchListView";
 import { Link, useNavigate } from "react-router-dom";
 import type { Pet } from "../../types/pets";
 import type { UserProfile } from "../../types/user";
 import PetsList from "../pets/PetsList";
-import { Container } from "react-bootstrap";
 import { PlusIcon } from "../../components/icon/PlusIcon";
+import { Search } from "lucide-react";
 
 // Define the interface for a single Pet
 
@@ -47,6 +46,8 @@ export default function Home() {
   const [matches, set_matches] = useState([]);
   const [isEditingName, setIsEditingName] = useState(false);
   const [displayName, setDisplayName] = useState("");
+  const [searchPet, setSearchPet] = useState("");
+  const [searchPetsList, setSearchPetsList] = useState<Pet[]>([]);
 
   useEffect(() => {
     if (access_token === null) {
@@ -63,6 +64,7 @@ export default function Home() {
           const user_profile_data = user_profile_response.data
             .user as UserProfile;
           set_user_profile(user_profile_data);
+          setSearchPetsList(user_profile_data.pets);
         } else {
           console.error(
             "Failed to fetch user profile:",
@@ -98,6 +100,19 @@ export default function Home() {
     load_data();
   }, [access_token, navigate]); // Add dependencies to prevent potential stale closures
 
+  useEffect(() => {
+    if (!user_profile?.pets) return;
+
+    if (searchPet) {
+      const filtered = user_profile.pets.filter((pet) =>
+        pet.name.toUpperCase().includes(searchPet.toUpperCase())
+      );
+      setSearchPetsList(filtered);
+    } else {
+      setSearchPetsList(user_profile.pets);
+    }
+  }, [searchPet, user_profile?.pets]);
+
   const handleSaveName = async () => {
     if (!access_token || !user_profile) return;
     try {
@@ -119,7 +134,7 @@ export default function Home() {
   }
 
   return (
-    <section className="flex flex-col gap-5">
+    <section className="flex flex-col h-full gap-5 justify-between">
       {/* {isEditingName ? (
         <div>
           <input
@@ -155,11 +170,14 @@ export default function Home() {
       <div>
         <p className="font-medium text-neutral-950 text-2xl">Trang chủ</p>
       </div>
-      <div>
+      <div className="relative w-full">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
         <input
           type="text"
           placeholder="Tìm kiếm"
-          className="bg-white py-3 px-2 border border-[#454699] w-full rounded-3xl"
+          value={searchPet}
+          onChange={(e) => setSearchPet(e.target.value)}
+          className="w-full pl-10 pr-4 py-3 border border-[#454699] rounded-3xl focus:ring-2 focus:ring-[#454699] focus:outline-none"
         />
       </div>
 
@@ -170,10 +188,10 @@ export default function Home() {
         </Link>
       </div>
       <div>
-        <PetsList pets={user_profile.pets} />
+        <PetsList pets={searchPetsList} />
       </div>
 
-      {user_profile ? (
+      {/* {user_profile ? (
         <div id="match_list_container">
           <UsersMatchListView
             me={{
@@ -183,7 +201,7 @@ export default function Home() {
             matches={matches}
           />
         </div>
-      ) : null}
+      ) : null} */}
     </section>
   );
 }

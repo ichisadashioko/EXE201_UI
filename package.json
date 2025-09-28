@@ -15,6 +15,7 @@
   "dependencies": {
     "@microsoft/signalr": "^9.0.6",
     "@tailwindcss/vite": "^4.1.13",
+    "lucide-react": "^0.544.0",
     "openapi-fetch": "^0.14.0",
     "react": "19.1.1",
     "react-bootstrap": "^2.10.10",

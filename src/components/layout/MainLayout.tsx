@@ -15,7 +15,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const { state, setState } = useNavbar();
   return (
     <div className="min-h-screen bg-home">
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {children}
       </section>
       <section className="fixed flex bottom-0 left-0 justify-between w-full p-3 shadow bg-[#FFF4FE]">

@@ -3,28 +3,16 @@ import {
   api_get_pet_info,
   api_upload_pet_image,
   getAccessToken,
+  URL,
 } from "../../authentication";
 
 import "./PetDetail.css";
 import type { PetImageInfo } from "../../typing";
-import { useNavigate, useParams } from "react-router-dom";
-
-interface PetPicture {
-  id: number;
-  url: string;
-  created_at: string;
-}
-
-interface Pet {
-  id: number;
-  name: string;
-  description: string;
-  owner_id: number;
-  can_edit: boolean;
-  profile_image_id: number | null;
-  profile_image_url: string | null;
-  images: PetPicture[]; // Add this to your Pet interface
-}
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
+import { EditIcon } from "../../components/icon/EditIcon";
+import Carousel from "../../components/common/Carousel";
+import type { Pet } from "../../types/pets";
 
 export default function PetDetail() {
   const { petId } = useParams<{ petId: string }>();
@@ -48,7 +36,7 @@ export default function PetDetail() {
       // /api/pets/{pet_id}/set_profile_image/{image_id}
       // const response = await fetch(`/api/pets/${pet.id}/profile-picture`, {
       const response = await fetch(
-        `/api/pets/${pet.id}/set_profile_image/${pictureId}`,
+        `${URL}/api/pets/${pet.id}/set_profile_image/${pictureId}`,
         {
           method: "POST",
           headers: {
@@ -165,23 +153,27 @@ export default function PetDetail() {
 
   return (
     <div>
-      <h1>{pet.name}</h1>
-      {pet.profile_image_url && (
+      <div className="flex justify-between items-center">
+        <Link to={"/home"} className="flex gap-5 items-center">
+          <ChevronLeft />
+          <p className="font-medium text-neutral-950 text-2xl">Chi tiết Pet</p>
+        </Link>
+        <EditIcon />
+      </div>
+
+      {/* {pet.profile_image_url && (
         <div>
-          <h3>Profile Picture</h3>
           <img
             src={pet.profile_image_url}
             alt="Profile"
             style={{ maxWidth: "200px", maxHeight: "200px" }}
           />
         </div>
-      )}
-      <p>{pet.description}</p>
+      )} */}
       <div>
-        <h2>All Images</h2>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-          {pet.can_edit ? <div>Can edit</div> : null}
-          {pet.images.map((pic) => (
+        <div>
+          <Carousel images={pet.images} id={pet.profile_image_id} />
+          {/* {pet.images.map((pic) => (
             <div
               key={pic.id}
               style={{ border: "1px solid #ccc", padding: "5px" }}
@@ -202,31 +194,32 @@ export default function PetDetail() {
                 </button>
               ) : null}
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
 
-      <div id="pet_images">
-        <h2>Images:</h2>
+      <div className="flex py-2 my-3">
         <div>
-          {image_list.map((image_info) => (
-            <div key={image_info.id} className="pet_image_item">
-              <img
-                src={image_info.url}
-                alt={`Pet Image ${image_info.id}`}
-                className="pet_image"
-              />
-              <p>
-                Uploaded at:{" "}
-                {new Date(image_info.created_ts * 1000).toLocaleString()}
-              </p>
-              <p>Uploaded at: {image_info.created_ts}</p>
-            </div>
-          ))}
+          <h1 className="text-3xl font-semibold text-[#454699]">{pet.name}</h1>
         </div>
       </div>
-      <div>
-        <h2>TODO: upload images</h2>
+      <div className="bg-white p-4 rounded-2xl text-neutral-500">
+        <div className="flex justify-between border-b border-neutral-500 py-3">
+          <p>Loài</p>
+          <p className="text-black font-medium">Mèo</p>
+        </div>
+        <div className="flex justify-between border-b border-neutral-500 py-3">
+          <p>Giống</p>
+          <p className="text-black font-medium">Anh lông ngắn</p>
+        </div>
+        <div className="flex justify-between border-b border-neutral-500 py-3">
+          <p>Giới tính</p>
+          <p className="text-black font-medium">Cái</p>
+        </div>
+        <div className="flex justify-between py-3">
+          <p>Cân nặng</p>
+          <p className="text-black font-medium">1kg</p>
+        </div>
       </div>
       <div>
         <div>
@@ -265,7 +258,7 @@ export default function PetDetail() {
             }}
           />
         </div>
-        <div>
+        {/* <div>
           <button
             onClick={() => {
               const input_elem = document.getElementById(
@@ -281,7 +274,7 @@ export default function PetDetail() {
           >
             upload images
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
