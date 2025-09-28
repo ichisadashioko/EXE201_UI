@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router";
 import {
   api_matching_record_store_rating,
   api_pets_matching,
@@ -7,6 +6,7 @@ import {
 import { useEffect, useState } from "react";
 import type { MatchingPetInfo } from "../../typing";
 import SampleOwnImageSelector from "../users/SampleOwnImageSelector";
+import { useNavigate } from "react-router-dom";
 
 function SwipeCard({
   profile,

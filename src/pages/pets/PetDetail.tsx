@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
 import {
   api_get_pet_info,
   api_upload_pet_image,
@@ -8,6 +7,7 @@ import {
 
 import "./PetDetail.css";
 import type { PetImageInfo } from "../../typing";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface PetPicture {
   id: number;
@@ -89,13 +89,13 @@ export default function PetDetail() {
   };
 
   const upload_file = async (file_obj: File) => {
-    let retval = await api_upload_pet_image(access_token!, petId!, file_obj);
+    const retval = await api_upload_pet_image(access_token!, petId!, file_obj);
 
     console.debug(retval);
 
     if (retval.success) {
       try {
-        let image_info: PetImageInfo = retval.data.image_info;
+        const image_info: PetImageInfo = retval.data.image_info;
         // let image_url = retval.data.image_info.url;
         console.log("Uploaded image URL:", image_info.url);
         // append to image list in UI
@@ -216,7 +216,10 @@ export default function PetDetail() {
                 alt={`Pet Image ${image_info.id}`}
                 className="pet_image"
               />
-              {/* <p>Uploaded at: {new Date(image_info.created_ts * 1000).toLocaleString()}</p> */}
+              <p>
+                Uploaded at:{" "}
+                {new Date(image_info.created_ts * 1000).toLocaleString()}
+              </p>
               <p>Uploaded at: {image_info.created_ts}</p>
             </div>
           ))}
@@ -240,7 +243,7 @@ export default function PetDetail() {
                 return;
               }
 
-              let file_obj = evt.target.files[0];
+              const file_obj = evt.target.files[0];
               if (file_obj == null) {
                 return;
               }
@@ -265,7 +268,7 @@ export default function PetDetail() {
         <div>
           <button
             onClick={() => {
-              let input_elem = document.getElementById(
+              const input_elem = document.getElementById(
                 "input_upload_image"
               ) as HTMLInputElement;
               if (input_elem == null) {

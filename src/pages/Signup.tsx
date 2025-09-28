@@ -94,7 +94,11 @@ export default function Signup() {
           <Button label="Xác nhận" onClick={handleSubmit} />
         </div>
       )}
-      {isSuccess === 1 ? <Success redirect="/login" /> : <></>}
+      {isSuccess === 1 ? (
+        <Success redirect="/login" text="Đăng ký thành công!" />
+      ) : (
+        <></>
+      )}
     </section>
   );
 }

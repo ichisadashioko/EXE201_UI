@@ -7,26 +7,14 @@ import {
 } from "../../authentication";
 // import { useNavigate } from "react-router";
 import UsersMatchListView from "../../pages/matching/UsersMatchListView";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import type { Pet } from "../../types/pets";
+import type { UserProfile } from "../../types/user";
+import PetsList from "../pets/PetsList";
+import { Container } from "react-bootstrap";
+import { PlusIcon } from "../../components/icon/PlusIcon";
 
 // Define the interface for a single Pet
-interface Pet {
-  id: number;
-  name: string;
-  description: string;
-  profile_image_id: number | null;
-  profile_image_url: string | null;
-  created_at: string; // Dates are typically strings in JSON
-}
-
-// Define the interface for the User Profile, which contains an array of Pets
-interface UserProfile {
-  id: number;
-  name: string | null;
-  is_guest: boolean;
-  created_at: string; // Dates are typically strings in JSON
-  pets: Pet[];
-}
 
 // .Select(obj => new
 // {
@@ -48,59 +36,6 @@ interface UserProfile {
 //     }).ToList(),
 // })
 
-// This component now takes the list of pets as a prop and renders them
-function PetList({ pets }: { pets: Pet[] }) {
-  // const navigate = useNavigate();
-
-  if (pets.length === 0) {
-    return (
-      <div>
-        <h2>Your Pets</h2>
-        <p>You haven't created any pets yet.</p>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <h2>Your Pets</h2>
-      <ul
-        style={{
-          border: "1px solid #f00",
-        }}
-      >
-        {pets.map((pet) => (
-          <li
-            key={pet.id}
-            // onClick={() => navigate(`/pets/${pet.id}`)}
-            style={{
-              cursor: "pointer",
-              marginBottom: "10px",
-              listStyle: "none",
-              border: "1px solid #0f0",
-            }}
-          >
-            {pet.profile_image_url && (
-              <img
-                src={pet.profile_image_url}
-                alt={pet.name}
-                style={{
-                  width: "50px",
-                  height: "50px",
-                  marginRight: "10px",
-                  verticalAlign: "middle",
-                  borderRadius: "5px",
-                }}
-              />
-            )}
-            <span>{pet.name}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 export default function Home() {
   // TODO fetch user profile and display user name
   // const [user, setUser] =
@@ -115,8 +50,7 @@ export default function Home() {
 
   useEffect(() => {
     if (access_token === null) {
-      console.log("Access token is null, redirecting to login page");
-      navigate("/login");
+      navigate("/");
       return; // Return early
     }
 
@@ -185,8 +119,8 @@ export default function Home() {
   }
 
   return (
-    <div>
-      {isEditingName ? (
+    <section className="flex flex-col gap-5">
+      {/* {isEditingName ? (
         <div>
           <input
             type="text"
@@ -217,21 +151,27 @@ export default function Home() {
             (edit)
           </span>
         </h1>
-      )}
+      )} */}
+      <div>
+        <p className="font-medium text-neutral-950 text-2xl">Trang chủ</p>
+      </div>
+      <div>
+        <input
+          type="text"
+          placeholder="Tìm kiếm"
+          className="bg-white py-3 px-2 border border-[#454699] w-full rounded-3xl"
+        />
+      </div>
 
-      {/* Render the PetList component with the user's pets */}
-      <PetList pets={user_profile.pets} />
-
-      {/* Buttons for navigation */}
-      <button onClick={() => navigate("/pets/create")}>Create New Pet</button>
-      <button
-        onClick={() => {
-          console.log("matching clicked");
-          navigate("/matching");
-        }}
-      >
-        Matching
-      </button>
+      <div className="flex justify-between">
+        <p className="font-medium text-neutral-950 text-xl">Pet của tôi</p>
+        <Link to={"/pets/create"}>
+          <PlusIcon />
+        </Link>
+      </div>
+      <div>
+        <PetsList pets={user_profile.pets} />
+      </div>
 
       {user_profile ? (
         <div id="match_list_container">
@@ -244,6 +184,6 @@ export default function Home() {
           />
         </div>
       ) : null}
-    </div>
+    </section>
   );
 }

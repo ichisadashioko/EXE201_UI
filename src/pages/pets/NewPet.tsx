@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { api_create_new_pet, getAccessToken } from "../../authentication";
 import { useEffect } from "react";
 

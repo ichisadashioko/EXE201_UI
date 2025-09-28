@@ -8,6 +8,7 @@ import MainLayout from "../components/layout/MainLayout";
 // import Loading from "../pages/Loading";
 import OnBoarding from "../pages/OnBoarding";
 import Login from "../pages/Login";
+import ChatView from "../pages/users/ChatView";
 
 interface Route {
   path: string;
@@ -48,7 +49,7 @@ export const routes: Route[] = [
     layout: MainLayout,
   },
   {
-    path: "/pets/:id",
+    path: "/pets/:petId",
     component: PetDetail,
     layout: MainLayout,
   },
@@ -68,5 +69,6 @@ export const routes: Route[] = [
   // {
   //   path: "/chat/:userId",
   //   component: ChatView,
+  //   layout: MainLayout,
   // },
 ];

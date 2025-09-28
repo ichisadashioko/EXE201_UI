@@ -133,7 +133,11 @@ const Login = () => {
           </div>
         </div>
       )}
-      {isSuccess === 1 ? <Success redirect="/home" /> : <></>}
+      {isSuccess === 1 ? (
+        <Success redirect="/home" text="Đăng nhập thành công" />
+      ) : (
+        <></>
+      )}
     </section>
   );
 };
