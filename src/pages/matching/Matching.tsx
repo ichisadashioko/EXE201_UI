@@ -219,18 +219,46 @@ export function OffspringGeneratorModal({
           </div>
           <div className="flex flex-col items-center">
             <span className="mb-2 text-gray-700">Image B</span>
-            <img
-              src={imageBUrl ?? undefined} // TODO show placeholder component if null
-              alt="Parent B"
-              className="w-32 h-32 object-cover rounded border cursor-pointer"
-              onClick={() => set_show_popup_image_selector(true)}
-            />
-            <button
-              className="mt-2 text-blue-500 underline"
-              onClick={() => set_show_popup_image_selector(true)}
-            >
-              {imageBUrl ? "Change" : "Select"} Image B
-            </button>
+            {(
+              (() => {
+                console.debug(`typeof(imageBUrl): ${typeof (imageBUrl)}`);
+                console.debug(`imageBUrl: ${imageBUrl}`);
+                if ((imageBUrl == null)) {
+                  return false;
+                }
+
+                if ((imageBUrl.length == null)) {
+                  return false;
+                }
+
+                if (typeof (imageBUrl.length) !== "number") {
+                  return false;
+                }
+
+                if ((imageBUrl.length == 0)) {
+                  return false;
+                }
+
+                console.debug(`imageBUrl.length: ${imageBUrl.length}`);
+
+                return true;
+              })()
+            ) ? (
+              <img
+                src={imageBUrl ?? undefined} // TODO show placeholder component if null
+                alt="Parent B"
+                className="w-32 h-32 object-cover rounded border cursor-pointer"
+                onClick={() => set_show_popup_image_selector(true)}
+              />
+            ) : (
+              <button
+                // className="mt-2 text-blue-500 underline"
+                className="w-32 h-32 object-cover rounded border cursor-pointer"
+                onClick={() => set_show_popup_image_selector(true)}
+              >
+                {imageBUrl ? "Change" : "Select"} Image B
+              </button>
+            )}
           </div>
         </div>
 
@@ -247,13 +275,15 @@ export function OffspringGeneratorModal({
         )}
 
         <div className="space-y-4">
-          <button
-            onClick={handleGenerate}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            disabled={isLoading}
-          >
-            {isLoading ? "Generating..." : "Generate Offspring"}
-          </button>
+          <div className="mt-4">
+            <button
+              onClick={handleGenerate}
+              className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              disabled={isLoading}
+            >
+              {isLoading ? "Generating..." : "Generate Offspring"}
+            </button>
+          </div>
 
           {resultImageUrl && (
             <div className="mt-4">
