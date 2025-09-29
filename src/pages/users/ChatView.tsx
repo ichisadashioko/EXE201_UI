@@ -6,6 +6,7 @@ import { getAccessToken } from '../../authentication'; // You need a function to
 interface ChatMessage {
     id: number;
     senderUserId: number;
+    sender_name: string | null;
     content: string;
     timestamp: string;
 }
@@ -91,7 +92,11 @@ export default function ChatView() {
             <div style={{ flexGrow: 1, overflowY: 'auto', padding: '10px' }}>
                 {messages.map(msg => (
                     <div key={msg.id} style={{ marginBottom: '10px' }}>
-                        <strong>User {msg.senderUserId}:</strong> {msg.content}
+                        {(msg.sender_name == null) ? (
+                            <strong>User {msg.senderUserId}:</strong>
+                        ) : (
+                            <strong>{msg.sender_name}:</strong>
+                        )} {msg.content}
                     </div>
                 ))}
             </div>

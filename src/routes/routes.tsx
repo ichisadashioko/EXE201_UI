@@ -61,7 +61,7 @@ export const routes: Route[] = [
   {
     path: "/matching",
     component: Matching,
-    layout: MainLayout,
+    // layout: MainLayout,
   },
   // {
   //   path: "/matching/figma",

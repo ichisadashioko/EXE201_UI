@@ -154,6 +154,14 @@ export function OffspringGeneratorModal({
     setIsLoading(true);
     setResultImageUrl(null);
 
+    // test code
+    // setTimeout(() => {
+    //   setResultImageUrl("/icon-512.png");
+    //   setIsLoading(false);
+    // }, 1000);
+
+    // return;
+
     try {
       const response = await fetch("/api/ai/offspring", {
         method: "POST",
@@ -183,8 +191,14 @@ export function OffspringGeneratorModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-2xl p-6 relative">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div
+        style={{
+          maxHeight: "100vh",
+          overflowY: "auto",
+        }}
+        className="bg-white rounded-lg shadow-lg w-11/12 max-w-2xl p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
@@ -247,7 +261,7 @@ export function OffspringGeneratorModal({
               <img
                 src={resultImageUrl}
                 alt="Offspring"
-                className="w-full rounded"
+                className="w-full rounded" // TODO set max height to fill remaining space
               />
             </div>
           )}
@@ -410,9 +424,8 @@ export default function Matching() {
                 className="absolute inset-0"
                 style={{
                   zIndex: 3 - index,
-                  transform: `scale(${1 - index * 0.05}) translateY(${
-                    index * 8
-                  }px)`,
+                  transform: `scale(${1 - index * 0.05}) translateY(${index * 8
+                    }px)`,
                   opacity: 1 - index * 0.3,
                 }}
               >
