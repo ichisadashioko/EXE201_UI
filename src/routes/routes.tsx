@@ -5,10 +5,9 @@ import PetDetail from "../pages/pets/PetDetail";
 import Signup from "../pages/Signup";
 import Home from "../pages/users/Home";
 import MainLayout from "../components/layout/MainLayout";
-// import Loading from "../pages/Loading";
 import OnBoarding from "../pages/OnBoarding";
 import Login from "../pages/Login";
-import ChatView from "../pages/users/ChatView";
+import Profile from "../pages/Profile";
 
 interface Route {
   path: string;
@@ -41,6 +40,11 @@ export const routes: Route[] = [
   {
     path: "/home",
     component: Home,
+    layout: MainLayout,
+  },
+  {
+    path: "/profile",
+    component: Profile,
     layout: MainLayout,
   },
   {

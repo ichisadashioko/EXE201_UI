@@ -3,7 +3,7 @@ import { HomeActiveIcon, HomeIcon } from "../icon/HomeIcon";
 import { CardActiveIcon, CardIcon } from "../icon/CardIcon";
 import { HeartIcon } from "../icon/HeartIcon";
 import { ChatIcon } from "../icon/ChatIcon";
-import { UserIcon } from "../icon/UserIcon";
+import { UserActiveIcon, UserIcon } from "../icon/UserIcon";
 import { useNavbar } from "../../providers/UseNavbar";
 import { Link } from "react-router-dom";
 
@@ -35,8 +35,8 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         <Link to={""} className="">
           <ChatIcon />
         </Link>
-        <Link to={""} className="">
-          <UserIcon />
+        <Link to={"/profile"} onClick={() => setState("profile")} className="">
+          {state === "profile" ? <UserActiveIcon /> : <UserIcon />}
         </Link>
       </section>
     </div>
