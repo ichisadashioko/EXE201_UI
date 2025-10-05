@@ -1,0 +1,17 @@
+[
+  {
+    "image": "/assets/on-boarding/onboarding1.svg",
+    "title": "Kết nối thú cưng",
+    "description": "Chỉ cần vài thao tác đơn giản, bạn đã mở ra cơ hội kết nối mới cho thú cưng ngay quanh khu vực."
+  },
+  {
+    "image": "/assets/on-boarding/onboarding2.svg",
+    "title": "Thuật toán ghép đôi",
+    "description": "Ứng dụng sử dụng thuật toán thông minh để gợi ý bạn phù hợp, dựa trên sở thích, thói quen và tính cách của thú cưng."
+  },
+  {
+    "image": "/assets/on-boarding/onboarding3.svg",
+    "title": "Cộng đồng đáng tin cậy",
+    "description": "Mọi hồ sơ đều được kiểm duyệt kỹ lưỡng để đảm bảo môi trường an toàn và thân thiện."
+  }
+]

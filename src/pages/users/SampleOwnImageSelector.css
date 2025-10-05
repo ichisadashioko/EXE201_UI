@@ -1,0 +1,32 @@
+.image-selector-popup {
+  display: block !important;
+  position: fixed !important;
+  top: 10vh !important;
+  left: 10vw !important;
+  width: 80vw !important;
+  height: 80vh !important;
+  background-color: black !important;
+  max-height: 80vh !important;
+  overflow-y: scroll !important;
+  z-index: 1000;
+}
+
+.image-selector-popup * {
+  color: #0f0 !important;
+}
+
+.image_list {
+  display: flex;
+  /* flex-wrap: wrap; */
+  overflow-x: auto; /* Enables horizontal scrolling if needed */
+  gap: 10px; /* This adds spacing between all items */
+  flex-shrink: 0; /* Prevents the item from shrinking */
+}
+
+.image-list-item {
+  cursor: pointer;
+  max-width: 150px;
+  height: 150px; /* Optional: for uniform size */
+  object-fit: cover; /* Optional: ensures image covers the area without distortion */
+  border-radius: 4px; /* Optional: adds rounded corners */
+}

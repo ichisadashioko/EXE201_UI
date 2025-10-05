@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router'; // Assuming you use react-router
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { getAccessToken } from '../authentication'; // You need a function to get the JWT token
+import { getAccessToken } from '../../authentication'; // You need a function to get the JWT token
 
 interface ChatMessage {
     id: number;
     senderUserId: number;
+    sender_name: string | null;
     content: string;
     timestamp: string;
 }
@@ -79,11 +80,23 @@ export default function ChatView() {
 
     // TODO update UI to show sender's name instead of user ID
     return (
-        <div style={{ maxWidth: '600px', margin: 'auto', border: '1px solid #ccc', borderRadius: '8px', display: 'flex', flexDirection: 'column', height: '80vh' }}>
+        <div style={{
+            maxWidth: '100vw',
+            margin: 'auto',
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100vh'
+        }}>
             <div style={{ flexGrow: 1, overflowY: 'auto', padding: '10px' }}>
                 {messages.map(msg => (
                     <div key={msg.id} style={{ marginBottom: '10px' }}>
-                        <strong>User {msg.senderUserId}:</strong> {msg.content}
+                        {(msg.sender_name == null) ? (
+                            <strong>User {msg.senderUserId}:</strong>
+                        ) : (
+                            <strong>{msg.sender_name}:</strong>
+                        )} {msg.content}
                     </div>
                 ))}
             </div>

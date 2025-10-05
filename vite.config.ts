@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import tailwindcss from '@tailwindcss/vite'
+import postcssPresetEnv from 'postcss-preset-env'
 // import path from 'path'
 // import { fileURLToPath } from 'url'
 // const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -15,6 +16,7 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
     ],
     build: {
+      cssTarget: 'chrome61',
       minify: (mode !== 'development'),
       // sourcemap: (mode === 'development') ? 'inline' : false,
       outDir: '../',
@@ -32,5 +34,16 @@ export default defineConfig(({ mode }) => {
       },
       cssCodeSplit: false,
     },
+    css: {
+      postcss: {
+        plugins: [
+          postcssPresetEnv({
+            features: {
+              'oklab-function': true,
+            }
+          })
+        ]
+      }
+    }
   }
 })

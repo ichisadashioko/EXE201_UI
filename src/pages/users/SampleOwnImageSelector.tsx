@@ -1,7 +1,13 @@
 import { useNavigate } from "react-router";
-import { api_PullAllImageDataForPetBSelection, api_upload_user_image, getAccessToken } from "../authentication";
+import {
+  api_PullAllImageDataForPetBSelection,
+  api_upload_user_image,
+  getAccessToken,
+} from "../../authentication";
 import { useEffect, useState } from "react";
-import type { PetImageInfo } from "../typing";
+import type { PetImageInfo } from "../../typing";
+
+import "./SampleOwnImageSelector.css"
 
 export interface ImageInfo {
   id: number;
@@ -25,10 +31,13 @@ interface api_PullAllImageDataForPetBSelectionResponse {
   user_images: ImageInfo[];
 }
 
-export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProps) {
+export default function SampleOwnImageSelector(
+  props: SampleOwnImageSelectorProps
+) {
   const navigate = useNavigate();
   const access_token = getAccessToken();
-  const [component_state, set_component_state] = useState<api_PullAllImageDataForPetBSelectionResponse>();
+  const [component_state, set_component_state] =
+    useState<api_PullAllImageDataForPetBSelectionResponse>();
 
   useEffect(() => {
     if (access_token == null) {
@@ -40,7 +49,7 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
     async function fetch_image_list() {
       let retval = await api_PullAllImageDataForPetBSelection(
         access_token!,
-        props.other_image_hash,
+        props.other_image_hash
       );
 
       console.debug(retval);
@@ -62,12 +71,8 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
     fetch_image_list();
   }, []);
 
-
   const upload_file = async (file_obj: File) => {
-    let retval = await api_upload_user_image(
-      access_token!,
-      file_obj,
-    );
+    let retval = await api_upload_user_image(access_token!, file_obj);
 
     console.debug(retval);
 
@@ -86,7 +91,7 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
     } else {
       alert(`Failed to upload image: ${retval.message}`);
     }
-  }
+  };
 
   function triggle_upload_action(el: HTMLInputElement) {
     console.log("Selected files:", el.files);
@@ -111,20 +116,21 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
 
   return (
     <div
+      className="image-selector-popup"
       style={{
-        display: "block",
-        position: "fixed",
-        top: "10vh",
-        left: "10vw",
-        width: "80vw",
-        height: "80vh",
-        backgroundColor: "black",
-        maxHeight: "80vh",
-        overflowY: "scroll",
+        // display: "block",
+        // position: "fixed",
+        // top: "10vh",
+        // left: "10vw",
+        // width: "80vw",
+        // height: "80vh",
+        // backgroundColor: "black",
+        // maxHeight: "80vh",
+        // overflowY: "scroll",
         zIndex: 1000, // TODO dynamic z-index as input argument
       }}
     >
-      {(component_state == null) ? (
+      {component_state == null ? (
         <div>Loading...</div>
       ) : (
         <div>
@@ -140,41 +146,55 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
                   triggle_upload_action(evt.target);
                 }}
               />
-              <button onClick={async () => {
-                let input_elem = (document.getElementById("ai_image_gen_input_upload_image") as HTMLInputElement);
-                if (input_elem == null) {
-                  console.error("ai_image_gen_input_upload_image element not found");
-                  alert("ai_image_gen_input_upload_image element not found");
-                  return;
-                }
+              <button
+                className="button"
+                onClick={async () => {
+                  const input_elem = document.getElementById(
+                    "ai_image_gen_input_upload_image"
+                  ) as HTMLInputElement;
+                  if (input_elem == null) {
+                    console.error(
+                      "ai_image_gen_input_upload_image element not found"
+                    );
+                    alert("ai_image_gen_input_upload_image element not found");
+                    return;
+                  }
 
-                input_elem.click();
-                // triggle_upload_action(input_elem);
-              }}>upload</button>
+                  input_elem.click();
+                  // triggle_upload_action(input_elem);
+                }}
+              >
+                upload
+              </button>
             </div>
-            <button onClick={() => props.onClose()}>close</button>
+            <button
+              className="button"
+              onClick={() => props.onClose()}>close</button>
           </div>
           <div id="pet_list">
-            {component_state.pets.map((pet) => (
-              <div key={pet.id} className="pet_item">
-                <h3>{pet.name}</h3>
-                <div className="image_list"
-                  style={{ display: "flex", flexWrap: "wrap" }}
-                >
-                  {pet.images.map((image) => (
-                    <img
-                      key={image.id}
-                      src={image.url}
-                      alt={`Pet ${pet.name} Image ${image.id}`}
-                      onClick={() => props.onSelect(image.url)}
-                      style={{ cursor: "pointer", maxWidth: "150px", margin: "5px" }}
-                    />
-                  ))}
+            {component_state.pets
+              .filter((pet) => (pet.images.length > 0))
+              .map((pet) => (
+                <div key={pet.id} className="pet_item">
+                  <h3>{pet.name}</h3>
+                  <div
+                    className="image_list"
+                  >
+                    {pet.images.map((image) => (
+                      <img
+                        key={image.id}
+                        src={image.url}
+                        alt={`Pet ${pet.name} Image ${image.id}`}
+                        onClick={() => props.onSelect(image.url)}
+                        className="image-list-item"
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
-          <div id="user_image_list"
+          <div
+            id="user_image_list"
             style={{ display: "flex", flexWrap: "wrap" }}
           >
             {component_state.user_images.map((image) => (
@@ -190,5 +210,5 @@ export default function SampleOwnImageSelector(props: SampleOwnImageSelectorProp
         </div>
       )}
     </div>
-  )
+  );
 }
