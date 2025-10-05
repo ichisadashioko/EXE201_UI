@@ -8,6 +8,8 @@ import MainLayout from "../components/layout/MainLayout";
 import OnBoarding from "../pages/OnBoarding";
 import Login from "../pages/Login";
 import Profile from "../pages/Profile";
+import Connect from "../pages/Connect";
+import Chat from "../pages/Chat";
 
 interface Route {
   path: string;
@@ -40,6 +42,16 @@ export const routes: Route[] = [
   {
     path: "/home",
     component: Home,
+    layout: MainLayout,
+  },
+  {
+    path: "/connect",
+    component: Connect,
+    layout: MainLayout,
+  },
+  {
+    path: "/chat",
+    component: Chat,
     layout: MainLayout,
   },
   {

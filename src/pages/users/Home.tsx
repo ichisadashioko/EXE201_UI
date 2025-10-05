@@ -43,7 +43,6 @@ export default function Home() {
   const [user_profile, set_user_profile] = useState<UserProfile | null>(null);
   const navigate = useNavigate();
   const access_token = getAccessToken();
-  const [matches, set_matches] = useState([]);
   const [isEditingName, setIsEditingName] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [searchPet, setSearchPet] = useState("");
@@ -81,19 +80,6 @@ export default function Home() {
         alert("An error occurred. Please try logging in again.");
         navigate("/login");
         return;
-      }
-
-      try {
-        const matches_response = await api_get_matches(access_token);
-        console.debug(matches_response);
-        if (matches_response.success) {
-          // Handle matches data if needed
-          set_matches(matches_response.data.matches);
-        } else {
-          console.error("Failed to fetch matches:", matches_response.message);
-        }
-      } catch (error) {
-        console.error(error);
       }
     };
 
@@ -190,18 +176,6 @@ export default function Home() {
       <div>
         <PetsList pets={searchPetsList} />
       </div>
-
-      {/* {user_profile ? (
-        <div id="match_list_container">
-          <UsersMatchListView
-            me={{
-              id: user_profile.id,
-              name: user_profile.name || null,
-            }}
-            matches={matches}
-          />
-        </div>
-      ) : null} */}
     </section>
   );
 }

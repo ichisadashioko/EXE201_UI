@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { getAccessToken } from "../../authentication";
 
 interface UserInfo {
@@ -53,6 +53,8 @@ export default function UsersMatchListView({
   me,
   matches,
 }: UsersMatchListViewProps) {
+  const navigate = useNavigate(); // Hook for navigation
+
   if (!matches || matches.length === 0) {
     return (
       <div style={{ textAlign: "center", padding: "40px", color: "#666" }}>
@@ -64,7 +66,6 @@ export default function UsersMatchListView({
       </div>
     );
   }
-  const navigate = useNavigate(); // Hook for navigation
 
   const handleMessageClick = async (otherUserId: number) => {
     try {

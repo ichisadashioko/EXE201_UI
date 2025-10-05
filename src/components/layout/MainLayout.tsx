@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { HomeActiveIcon, HomeIcon } from "../icon/HomeIcon";
 import { CardActiveIcon, CardIcon } from "../icon/CardIcon";
-import { HeartIcon } from "../icon/HeartIcon";
-import { ChatIcon } from "../icon/ChatIcon";
+import { HeartActiveIcon, HeartIcon } from "../icon/HeartIcon";
+import { ChatActiveIcon, ChatIcon } from "../icon/ChatIcon";
 import { UserActiveIcon, UserIcon } from "../icon/UserIcon";
 import { useNavbar } from "../../providers/UseNavbar";
 import { Link } from "react-router-dom";
@@ -29,11 +29,11 @@ const MainLayout = ({ children }: MainLayoutProps) => {
         >
           {state === "matching" ? <CardActiveIcon /> : <CardIcon />}
         </Link>
-        <Link to={""} className="">
-          <HeartIcon />
+        <Link to={"/connect"} onClick={() => setState("connect")} className="">
+          {state === "connect" ? <HeartActiveIcon /> : <HeartIcon />}
         </Link>
-        <Link to={""} className="">
-          <ChatIcon />
+        <Link to={"/chat"} className="">
+          {state === "chat" ? <ChatActiveIcon /> : <ChatIcon />}
         </Link>
         <Link to={"/profile"} onClick={() => setState("profile")} className="">
           {state === "profile" ? <UserActiveIcon /> : <UserIcon />}
