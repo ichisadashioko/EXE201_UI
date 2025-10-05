@@ -76,16 +76,16 @@ function SwipeCard({
         {isDragging && (
           <>
             <div
-              className="absolute top-8 left-8 bg-green-500 text-white px-4 py-2 rounded-lg"
+              className="absolute top-[25vh] left-8 flex items-center justify-center bg-white px-4 py-2 w-16 h-16 rounded-full"
               style={{ opacity: currentX > 0 ? currentX / 100 : 0 }}
             >
-              ❤️ LIKE
+              <RedHeartIcon />
             </div>
             <div
-              className="absolute top-8 right-8 bg-red-500 text-white px-4 py-2 rounded-lg"
+              className="absolute top-[25vh] right-8 flex items-center justify-center bg-white px-4 py-2 w-16 h-16 rounded-full"
               style={{ opacity: currentX < 0 ? Math.abs(currentX) / 100 : 0 }}
             >
-              ❌ PASS
+              <CrossIcon />
             </div>
           </>
         )}
@@ -393,7 +393,7 @@ export default function Matching() {
     //     <pre>{JSON.stringify(pet_info_list, null, 4)}</pre>
     // </div>
 
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div>
       {/* Offspring Modal */}
       {showOffspringModal && currentPetForOffspring && (
         <OffspringGeneratorModal
