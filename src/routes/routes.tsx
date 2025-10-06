@@ -9,6 +9,9 @@ import MainLayout from "../components/layout/MainLayout";
 import OnBoarding from "../pages/OnBoarding";
 import Login from "../pages/Login";
 import ChatView from "../pages/users/ChatView";
+import SamplePayment from "../pages/users/SamplePayment";
+import AdminLoginPage from "../pages/admin/login";
+import AdminHomePage from "../pages/admin/home";
 
 interface Route {
   path: string;
@@ -61,6 +64,21 @@ export const routes: Route[] = [
   {
     path: "/matching",
     component: Matching,
+    // layout: MainLayout,
+  },
+  {
+    path: "/premium",
+    component: SamplePayment,
+    // layout: MainLayout,
+  },
+  {
+    path: "/admin/login",
+    component: AdminLoginPage,
+    // layout: MainLayout,
+  },
+  {
+    path: "/admin/home",
+    component: AdminHomePage,
     // layout: MainLayout,
   },
   // {
