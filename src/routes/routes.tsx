@@ -12,6 +12,7 @@ import ChatView from "../pages/users/ChatView";
 import SamplePayment from "../pages/users/SamplePayment";
 import AdminLoginPage from "../pages/admin/login";
 import AdminHomePage from "../pages/admin/home";
+import VerifyEmail from "../pages/utils/VerifyEmail";
 
 interface Route {
   path: string;
@@ -79,6 +80,11 @@ export const routes: Route[] = [
   {
     path: "/admin/home",
     component: AdminHomePage,
+    // layout: MainLayout,
+  },
+  {
+    path: "/verify",
+    component: VerifyEmail,
     // layout: MainLayout,
   },
   // {
