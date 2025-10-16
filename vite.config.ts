@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
       cssTarget: 'chrome61',
       minify: (mode !== 'development'),
       // sourcemap: (mode === 'development') ? 'inline' : false,
-      outDir: '../',
+      outDir: '../wwwroot/',
       emptyOutDir: false,
       rollupOptions: {
         // input: path.resolve(__dirname, 'src/main.tsx'),

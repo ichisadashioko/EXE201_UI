@@ -15,6 +15,9 @@
   - [ ] improve invoice listing UI
 - `Matching.tsx`
   - [ ] pull data from database to render
+- `index.css`/vite config
+  - assets bundle and copying
+
 <!-- # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
