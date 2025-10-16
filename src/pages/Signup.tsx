@@ -3,7 +3,6 @@ import Logo from "../components/common/Logo";
 import { Link } from "react-router";
 import Button from "../components/common/Button";
 import Success from "./common/Success";
-import { URL } from "../authentication";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -11,7 +10,7 @@ export default function Signup() {
   const [isSuccess, setIsSuccess] = useState(0);
 
   const handleSubmit = async () => {
-    const response = await fetch(`${URL}/api/users/create`, {
+    const response = await fetch(`/api/users/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -35,12 +34,12 @@ export default function Signup() {
           <div className="flex flex-col gap-3">
             <h1 className="text-2xl text-[#343434] font-semibold">Đăng ký</h1>
             <div className="flex flex-col">
-              <label htmlFor="email">Số điện thoại</label>
+              <label htmlFor="email">Email</label>
               <input
                 type="email"
                 id="email"
                 value={email}
-                placeholder="Nhập số điện thoại"
+                placeholder="Nhập email"
                 onChange={(e) => setEmail(e.target.value)}
                 className="border border-neutral-500 px-3 py-2 rounded-3xl bg-white"
                 required
@@ -67,7 +66,11 @@ export default function Signup() {
           <Button label="Xác nhận" onClick={handleSubmit} />
         </div>
       )}
-      {isSuccess === 1 ? <Success redirect="/login" /> : <></>}
+      {isSuccess === 1 ? (
+        <Success redirect="/login" text="Đăng ký thành công!" />
+      ) : (
+        <></>
+      )}
     </section>
   );
 }

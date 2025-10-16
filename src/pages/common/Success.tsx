@@ -3,9 +3,10 @@ import { useNavigate } from "react-router";
 
 type SuccessProps = {
   redirect: string;
+  text?: string;
 };
 
-const Success = ({ redirect }: SuccessProps) => {
+const Success = ({ redirect, text }: SuccessProps) => {
   //   const [count, setCount] = useState(3);
   const navigate = useNavigate();
 
@@ -27,9 +28,7 @@ const Success = ({ redirect }: SuccessProps) => {
   return (
     <section className="flex flex-col gap-5 text-center">
       <img src="/assets/action/success.png" alt="" />
-      <p className="font-medium text-neutral-950 text-xl">
-        Đăng ký thành công !
-      </p>
+      <p className="font-medium text-neutral-950 text-xl">{text}</p>
     </section>
   );
 };

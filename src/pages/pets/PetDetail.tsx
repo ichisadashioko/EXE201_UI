@@ -1,101 +1,89 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
 import {
   api_get_pet_info,
   api_upload_pet_image,
   getAccessToken,
+  type api_get_pet_info_Pet,
+  type api_get_pet_info_PetPicture,
+  type api_upload_pet_image_OK,
 } from "../../authentication";
 
 import "./PetDetail.css";
-import type { PetImageInfo } from "../../typing";
-
-interface PetPicture {
-  id: number;
-  url: string;
-  created_at: number;
-}
-
-interface Pet {
-  id: number;
-  name: string;
-  description: string;
-  owner_id: number;
-  can_edit: boolean;
-  profile_image_id: number | null;
-  profile_image_url: string | null;
-  images: PetPicture[]; // Add this to your Pet interface
-}
+import { Link, useNavigate, useParams } from "react-router";
+import { ChevronLeft } from "lucide-react";
+import { EditIcon } from "../../components/icon/EditIcon";
+import PetGalleryHorizontalScroll from "../../components/common/PetGalleryHorizontalScroll";
 
 export default function PetDetail() {
   const { petId } = useParams<{ petId: string }>();
   const navigate = useNavigate();
   const access_token = getAccessToken();
 
-  const [image_list, setImageList] = useState<PetImageInfo[]>([]);
+  const [image_list, setImageList] = useState<api_get_pet_info_PetPicture[]>([]);
 
   //
 
-  const [pet, setPet] = useState<Pet | null>(null); // Use the updated Pet interface
-  const [isUpdating, setIsUpdating] = useState(false); // To disable buttons during API calls
+  const [pet, setPet] = useState<api_get_pet_info_Pet | null>(null); // Use the updated Pet interface
+  // const [isUpdating, setIsUpdating] = useState(false); // To disable buttons during API calls
 
   // Function to handle setting the profile picture
-  const handleSetProfilePicture = async (pictureId: number) => {
-    if (!pet || !access_token) return;
+  // const handleSetProfilePicture = async (pictureId: number) => {
+  //   if (!pet || !access_token) return;
 
-    setIsUpdating(true);
+  //   setIsUpdating(true);
 
-    try {
-      // /api/pets/{pet_id}/set_profile_image/{image_id}
-      // const response = await fetch(`/api/pets/${pet.id}/profile-picture`, {
-      const response = await fetch(
-        `/api/pets/${pet.id}/set_profile_image/${pictureId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-          // body: JSON.stringify({ pictureId: pictureId }),
-        }
-      );
+  //   try {
+  //     // /api/pets/{pet_id}/set_profile_image/{image_id}
+  //     // const response = await fetch(`/api/pets/${pet.id}/profile-picture`, {
+  //     const response = await fetch(
+  //       `/api/pets/${pet.id}/set_profile_image/${pictureId}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${access_token}`,
+  //         },
+  //         // body: JSON.stringify({ pictureId: pictureId }),
+  //       }
+  //     );
 
-      if (response.ok) {
-        // For a better user experience, update the local state immediately
-        // instead of re-fetching the entire pet object.
-        const newProfilePicture = pet.images.find(
-          (img) => img.id === pictureId
-        );
-        if (newProfilePicture) {
-          setPet((prevPet) => {
-            if (!prevPet) return null;
-            return {
-              ...prevPet,
-              profile_image_id: newProfilePicture.id,
-              profile_image_url: newProfilePicture.url,
-            };
-          });
-        }
-        alert("Profile picture updated!");
-      } else {
-        const errorData = await response.json();
-        alert(`Failed to update profile picture: ${errorData.message}`);
-      }
-    } catch (error) {
-      console.error("Error setting profile picture:", error);
-      alert("An error occurred while updating the profile picture.");
-    } finally {
-      setIsUpdating(false);
-    }
-  };
+  //     if (response.ok) {
+  //       // For a better user experience, update the local state immediately
+  //       // instead of re-fetching the entire pet object.
+  //       const newProfilePicture = pet.images.find(
+  //         (img) => img.id === pictureId
+  //       );
+  //       if (newProfilePicture) {
+  //         setPet((prevPet) => {
+  //           if (!prevPet) return null;
+  //           return {
+  //             ...prevPet,
+  //             profile_image_id: newProfilePicture.id,
+  //             profile_image_url: newProfilePicture.url,
+  //           };
+  //         });
+  //       }
+  //       alert("Profile picture updated!");
+  //     } else {
+  //       const errorData = await response.json();
+  //       alert(`Failed to update profile picture: ${errorData.message}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error setting profile picture:", error);
+  //     alert("An error occurred while updating the profile picture.");
+  //   } finally {
+  //     setIsUpdating(false);
+  //   }
+  // };
 
   const upload_file = async (file_obj: File) => {
-    let retval = await api_upload_pet_image(access_token!, petId!, file_obj);
+    const retval = await api_upload_pet_image(access_token!, petId!, file_obj);
 
     console.debug(retval);
 
     if (retval.success) {
       try {
-        let image_info: PetImageInfo = retval.data.image_info;
+        const image_info = (retval.data as api_upload_pet_image_OK).image_info;
         // let image_url = retval.data.image_info.url;
         console.log("Uploaded image URL:", image_info.url);
         // append to image list in UI
@@ -135,8 +123,9 @@ export default function PetDetail() {
             // TODO display pet info
             // alert(`Pet info: ${JSON.stringify(retval.data)}`);
             try {
-              setPet(retval.data);
-              setImageList(retval.data.images);
+              let pet_info = retval.data as api_get_pet_info_Pet;
+              setPet(pet_info);
+              setImageList(pet_info.images);
             } catch (error) {
               console.error("Error fetching pet info:");
               console.error(error);
@@ -164,27 +153,34 @@ export default function PetDetail() {
   }
 
   return (
-    <div>
-      <h1>{pet.name}</h1>
-      {pet.profile_image_url && (
+    <div id="pet_detail_root_container">
+      <div className="flex justify-between items-center">
+        <Link to={"/home"} className="flex gap-5 items-center">
+          <ChevronLeft />
+          <p className="font-medium text-neutral-950 text-2xl">Chi tiết Pet</p>
+        </Link>
+        <EditIcon />
+      </div>
+
+      {/* {pet.profile_image_url && (
         <div>
-          <h3>Profile Picture</h3>
           <img
             src={pet.profile_image_url}
             alt="Profile"
             style={{ maxWidth: "200px", maxHeight: "200px" }}
           />
         </div>
-      )}
-      <p>{pet.description}</p>
+      )} */}
       <div>
-        <h2>All Images</h2>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-          {pet.can_edit ? <div>Can edit</div> : null}
-          {pet.images.map((pic) => (
+        <div>
+          <PetGalleryHorizontalScroll
+            images={pet.images}
+            profile_picture_id={pet.profile_image_id}
+          />
+          {/* {pet.images.map((pic) => (
             <div
               key={pic.id}
-              // style={{ border: "1px solid #ccc", padding: "5px" }}
+              style={{ border: "1px solid #ccc", padding: "5px" }}
             >
               <img
                 src={pic.url}
@@ -202,28 +198,33 @@ export default function PetDetail() {
                 </button>
               ) : null}
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
 
-      <div id="pet_images">
-        <h2>Images:</h2>
+      <div className="flex py-2 my-3">
         <div>
-          {image_list.map((image_info) => (
-            <div key={image_info.id} className="pet_image_item">
-              <img
-                src={image_info.url}
-                alt={`Pet Image ${image_info.id}`}
-                className="pet_image"
-              />
-              {/* <p>Uploaded at: {new Date(image_info.created_ts * 1000).toLocaleString()}</p> */}
-              <p>Uploaded at: {image_info.created_ts}</p>
-            </div>
-          ))}
+          <h1 className="text-3xl font-semibold text-[#454699]">{pet.name}</h1>
         </div>
       </div>
-      <div>
-        <h2>TODO: upload images</h2>
+      {/* TODO get info from api */}
+      <div className="bg-white p-4 rounded-2xl text-neutral-500">
+        <div className="flex justify-between border-b border-neutral-500 py-3">
+          <p>Loài</p>
+          <p className="text-black font-medium">Mèo</p>
+        </div>
+        <div className="flex justify-between border-b border-neutral-500 py-3">
+          <p>Giống</p>
+          <p className="text-black font-medium">Anh lông ngắn</p>
+        </div>
+        <div className="flex justify-between border-b border-neutral-500 py-3">
+          <p>Giới tính</p>
+          <p className="text-black font-medium">Cái</p>
+        </div>
+        <div className="flex justify-between py-3">
+          <p>Cân nặng</p>
+          <p className="text-black font-medium">1kg</p>
+        </div>
       </div>
       <div>
         <div>
@@ -240,17 +241,13 @@ export default function PetDetail() {
                 return;
               }
 
-              let file_obj = evt.target.files[0];
+              const file_obj = evt.target.files[0];
               if (file_obj == null) {
                 return;
               }
 
               console.log("Selected file:", file_obj);
-              upload_file(file_obj).then(() => {
-                console.debug("upload_file done");
-                // set value to null so that the same file can be uploaded again if needed
-                evt.target.value = "";
-              });
+              upload_file(file_obj);
               // api_upload_pet_image(
               //     access_token!,
               //     petId!,
@@ -266,10 +263,10 @@ export default function PetDetail() {
             }}
           />
         </div>
-        <div>
+        {/* <div>
           <button
             onClick={() => {
-              let input_elem = document.getElementById(
+              const input_elem = document.getElementById(
                 "input_upload_image"
               ) as HTMLInputElement;
               if (input_elem == null) {
@@ -282,7 +279,7 @@ export default function PetDetail() {
           >
             upload images
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

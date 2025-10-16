@@ -1,43 +1,62 @@
 import type { ReactNode } from "react";
+import { HomeActiveIcon, HomeIcon } from "../icon/HomeIcon";
+import { CardActiveIcon, CardIcon } from "../icon/CardIcon";
+import { HeartActiveIcon, HeartIcon } from "../icon/HeartIcon";
+import { ChatActiveIcon, ChatIcon } from "../icon/ChatIcon";
+import { UserActiveIcon, UserIcon } from "../icon/UserIcon";
+import { useNavbar } from "../../providers/UseNavbar";
+import { Link } from "react-router";
+
+import './MainLayout.css';
 
 interface MainLayoutProps {
   children: ReactNode;
 }
 
 const MainLayout = ({ children }: MainLayoutProps) => {
+  const { state, setState } = useNavbar();
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-gray-900">Pet App</h1>
-            <nav className="flex space-x-4">
-              <a href="/" className="text-gray-600 hover:text-gray-900">
-                Home
-              </a>
-              <a
-                href="/pets/create"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                Add Pet
-              </a>
-              <a href="/matching" className="text-gray-600 hover:text-gray-900">
-                Matching
-              </a>
-            </nav>
-          </div>
-        </div>
-      </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div id="main_layout_root_container" className="min-h-screen bg-home">
+      <section
+        id="main_layout_content_section"
+        // className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8"
+      >
         {children}
-      </main>
-      <footer className="bg-gray-200 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <p className="text-center text-gray-600">
-            © 2024 Pet App. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      </section>
+      <section
+        id="main_layout_navbar"
+        className="flex justify-between w-full p-3 shadow bg-[#FFF4FE]">
+        <Link to={"/home"} onClick={() => setState("home")} className="">
+          {state === "home" ? <HomeActiveIcon /> : <HomeIcon />}
+        </Link>
+        <Link
+          to={"/matching"}
+          onClick={() => setState("matching")}
+          className=""
+        >
+          {state === "matching" ? <CardActiveIcon /> : <CardIcon />}
+        </Link>
+        <Link
+          to={"/connect"}
+          onClick={() => setState("connect")}
+          className=""
+        >
+          {state === "connect" ? <HeartActiveIcon /> : <HeartIcon />}
+        </Link>
+        <Link
+          to={"/chat"}
+          onClick={() => setState("chat")}
+          className="">
+          {state === "chat" ? <ChatActiveIcon /> : <ChatIcon />}
+        </Link>
+        <Link
+          to={"/profile"}
+          onClick={() => setState("profile")}
+          className=""
+        >
+          {state === "profile" ? <UserActiveIcon /> : <UserIcon />}
+        </Link>
+      </section>
     </div>
   );
 };

@@ -1,4 +1,21 @@
-# React + TypeScript + Vite
+# TODO
+
+- `PetDetail.tsx`
+  - [ ] add UI to add more information
+  - [ ] fix upload image
+  - [ ] fix image gallery scrolling problem
+- chat feature
+  - [ ] list existing chat
+  - [ ] improve messaging UI
+- `Connect.tsx`
+  - [ ] list matches there
+- user profile
+  - [ ] change password
+  - [ ] improve upgrade premium UI
+  - [ ] improve invoice listing UI
+- `Matching.tsx`
+  - [ ] pull data from database to render
+<!-- # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
@@ -66,4 +83,4 @@ export default tseslint.config([
     },
   },
 ])
-```
+``` -->

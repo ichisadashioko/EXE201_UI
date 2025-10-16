@@ -91,7 +91,7 @@ const Login = () => {
                 type="email"
                 id="email"
                 value={email}
-                placeholder="Nhập số điện thoại"
+                placeholder="Nhập email"
                 onChange={(e) => setEmail(e.target.value)}
                 className="border border-neutral-500 px-3 py-2 rounded-3xl bg-white"
                 required
@@ -125,7 +125,7 @@ const Login = () => {
             <p>
               Bạn chưa có tài khoản?{" "}
               <span>
-                <Link className="text-[#454699]" to={"/register"}>
+                <Link className="text-[#454699]" to={"/signup"}>
                   <span className="underline">Đăng ký ngay</span>{" "}
                 </Link>
               </span>
@@ -133,7 +133,11 @@ const Login = () => {
           </div>
         </div>
       )}
-      {isSuccess === 1 ? <Success redirect="/home" /> : <></>}
+      {isSuccess === 1 ? (
+        <Success redirect="/home" text="Đăng nhập thành công" />
+      ) : (
+        <></>
+      )}
     </section>
   );
 };

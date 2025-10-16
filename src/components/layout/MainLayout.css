@@ -1,0 +1,28 @@
+#main_layout_root_container {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    overflow-y: hidden !important;
+    min-height: unset !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+#main_layout_content_section {
+    order: 1 !important;
+    flex-grow: 1 !important;
+    overflow-y: auto !important;
+    padding-left: 1rem !important;
+    padding-top: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+#main_layout_content_section::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+}
+
+#main_layout_navbar {
+    order: 2 !important;
+    flex-shrink: 0 !important;
+}

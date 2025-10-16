@@ -23,8 +23,6 @@
 const ACCESS_TOKEN_KEY = "access_token";
 // const LOGIN_PATH = '/login'; // Adjust this to your login page path
 
-// export const URL = "http://localhost:5115";
-export const URL = "";
 /**
  * Stores the access token in localStorage.
  * @param {string} token The JWT access token to store.
@@ -50,7 +48,7 @@ export async function api_login_with_email(email: string, password: string) {
     //         password: password,
     //     }
     // });
-    const response_obj = await fetch(`${URL}/api/users/login_with_email`, {
+    const response_obj = await fetch(`/api/users/login_with_email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +89,7 @@ export async function api_matching_record_store_rating(
   rating: number
 ) {
   try {
-    const response_obj = await fetch(`${URL}/api/matching-records`, {
+    const response_obj = await fetch(`/api/matching-records`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -132,7 +130,7 @@ export async function api_matching_record_store_rating(
 
 export async function api_pets_matching(token: string) {
   try {
-    const response_obj = await fetch(`${URL}/api/pets/matching`, {
+    const response_obj = await fetch(`/api/pets/matching`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -170,6 +168,16 @@ export async function api_pets_matching(token: string) {
   }
 }
 
+export interface api_upload_pet_image_OK {
+  message: string;
+  updated_as_profile_picture: boolean;
+  image_info: {
+    id: number;
+    url: string;
+    created_at: number;
+  };
+}
+
 export async function api_upload_pet_image(
   token: string,
   pet_id: string,
@@ -181,7 +189,7 @@ export async function api_upload_pet_image(
     form_data.append("file", image_file);
 
     const response_obj = await fetch(
-      `${URL}/api/pets/${pet_id}/images/upload`,
+      `/api/pets/${pet_id}/images/upload`,
       {
         method: "POST",
         headers: {
@@ -197,7 +205,7 @@ export async function api_upload_pet_image(
     );
 
     if (response_obj.ok) {
-      const data = await response_obj.json();
+      const data: api_upload_pet_image_OK = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
@@ -209,7 +217,7 @@ export async function api_upload_pet_image(
         success: false,
         status_code: response_obj.status,
         data: await response_obj.text(),
-        message: "Failed to get pet info",
+        message: "failed to upload pet image",
       };
     }
   } catch (error) {
@@ -228,7 +236,7 @@ export async function api_upload_user_image(token: string, image_file: File) {
     form_data.append("name", image_file.name);
     form_data.append("file", image_file);
 
-    const response_obj = await fetch(`${URL}/api/users/images/upload`, {
+    const response_obj = await fetch(`/api/users/images/upload`, {
       method: "POST",
       headers: {
         // 'Content-Type': 'application/json',
@@ -268,9 +276,26 @@ export async function api_upload_user_image(token: string, image_file: File) {
   }
 }
 
+export interface api_get_pet_info_PetPicture {
+  id: number;
+  url: string;
+  created_at: number;
+}
+
+export interface api_get_pet_info_Pet {
+  id: number;
+  name: string;
+  description: string;
+  owner_id: number;
+  can_edit: boolean;
+  profile_image_id: number | null;
+  profile_image_url: string | null;
+  images: api_get_pet_info_PetPicture[];
+}
+
 export async function api_get_pet_info(token: string, pet_id: string) {
   try {
-    const response_obj = await fetch(`${URL}/api/pets/${pet_id}`, {
+    const response_obj = await fetch(`/api/pets/${pet_id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -282,7 +307,7 @@ export async function api_get_pet_info(token: string, pet_id: string) {
     });
 
     if (response_obj.ok) {
-      const data = await response_obj.json();
+      const data: api_get_pet_info_Pet = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
@@ -310,7 +335,7 @@ export async function api_get_pet_info(token: string, pet_id: string) {
 
 export async function api_create_new_pet(token: string, pet_name: string) {
   try {
-    const response_obj = await fetch(`${URL}/api/pets/new`, {
+    const response_obj = await fetch(`/api/pets/new`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -350,7 +375,7 @@ export async function api_create_new_pet(token: string, pet_name: string) {
 
 export async function api_get_matches(token: string) {
   try {
-    const response_obj = await fetch(`${URL}/api/matches`, {
+    const response_obj = await fetch(`/api/matches`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -385,9 +410,30 @@ export async function api_get_matches(token: string) {
   }
 }
 
+
+// These interfaces is not finalized for general use. Do not extract to a common file yet.
+// Define the interface for a single Pet
+export interface api_get_user_profile_Pet {
+  id: number;
+  name: string;
+  description: string;
+  profile_image_id: number | null;
+  profile_image_url: string | null;
+  created_at: number;
+}
+
+// Define the interface for the User Profile, which contains an array of Pets
+export interface api_get_user_profile_UserProfile {
+  id: number;
+  name: string | null;
+  is_guest: boolean;
+  created_at: number;
+  pets: api_get_user_profile_Pet[];
+}
+
 export async function api_get_user_profile(token: string) {
   try {
-    const response_obj = await fetch(`${URL}/api/users/me`, {
+    const response_obj = await fetch(`/api/users/me`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -426,7 +472,7 @@ export async function api_update_display_name(
   new_name: string
 ) {
   try {
-    const response = await fetch(`${URL}/api/users/name`, {
+    const response = await fetch(`/api/users/name`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -572,7 +618,7 @@ export async function api_PullAllImageDataForPetBSelection(
   hash: string | null
 ) {
   try {
-    const response_obj = await fetch(`${URL}/api/ai/users/images`, {
+    const response_obj = await fetch(`/api/ai/users/images`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

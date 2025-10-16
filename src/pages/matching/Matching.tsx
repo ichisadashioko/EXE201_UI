@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router";
 import {
   api_matching_record_store_rating,
   api_pets_matching,
@@ -7,6 +6,16 @@ import {
 import { useEffect, useState } from "react";
 import type { MatchingPetInfo } from "../../typing";
 import SampleOwnImageSelector from "../users/SampleOwnImageSelector";
+import { useNavigate } from "react-router";
+import {
+  // Heart,
+  MapPin
+} from "lucide-react";
+import StarIcon from "../../components/icon/StarIcon";
+import RedHeartIcon from "../../components/icon/RedHeartIcon";
+import { CrossIcon } from "../../components/icon/CrossIcon";
+
+import './Matching.css';
 
 function SwipeCard({
   profile,
@@ -18,7 +27,6 @@ function SwipeCard({
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [currentX, setCurrentX] = useState(0);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleStart = (clientX: number) => {
     setIsDragging(true);
@@ -45,7 +53,7 @@ function SwipeCard({
 
   return (
     <div
-      className="absolute inset-4 bg-white rounded-2xl shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing select-none"
+      className="absolute inset-0 bg-white rounded-2xl shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing select-none"
       style={{
         transform: `translateX(${currentX}px) rotate(${rotation}deg)`,
         opacity: isDragging ? opacity : 1,
@@ -60,7 +68,7 @@ function SwipeCard({
       onTouchEnd={handleEnd}
     >
       {/* Image Section */}
-      <div className="relative h-3/5">
+      <div className="relative h-full">
         <img
           src={profile.profile_image_url ?? undefined}
           alt={profile.name}
@@ -72,50 +80,32 @@ function SwipeCard({
         {isDragging && (
           <>
             <div
-              className="absolute top-8 left-8 bg-green-500 text-white px-4 py-2 rounded-lg"
+              className="absolute top-[25vh] left-8 flex items-center justify-center bg-white px-4 py-2 w-16 h-16 rounded-full"
               style={{ opacity: currentX > 0 ? currentX / 100 : 0 }}
             >
-              ❤️ LIKE
+              <RedHeartIcon />
             </div>
             <div
-              className="absolute top-8 right-8 bg-red-500 text-white px-4 py-2 rounded-lg"
+              className="absolute top-[25vh] right-8 flex items-center justify-center bg-white px-4 py-2 w-16 h-16 rounded-full"
               style={{ opacity: currentX < 0 ? Math.abs(currentX) / 100 : 0 }}
             >
-              ❌ PASS
+              <CrossIcon />
             </div>
           </>
         )}
 
         {/* Basic Info Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
-          <h2>{profile.name}</h2>
-          <p>📍</p>
-        </div>
-      </div>
-
-      {/* Info Section */}
-      <div className="h-2/5 p-4 overflow-y-auto">
-        <div className="space-y-3">
-          <div>
-            <h3>About {profile.name}</h3>
-            <p className="text-gray-600">{profile.description}</p>
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[#000148]/70 via-[#000148]/30 to-transparent p-5 text-white">
+          <div className="flex justify-between items-baseline">
+            <h2 className="text-3xl font-bold">{profile.name}</h2>
+            <p>1kg</p>
           </div>
-
-          {isExpanded && (
-            <div className="space-y-2 text-gray-600">
-              <p>🎯 Looking for something serious</p>
-              <p>🎵 Loves indie music</p>
-              <p>🍕 Foodie at heart</p>
-              <p>✈️ Travel enthusiast</p>
-            </div>
-          )}
-
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="text-blue-500 underline"
-          >
-            {isExpanded ? "Show less" : "Show more"}
-          </button>
+          <div className="flex justify-between items-baseline">
+            <p className="flex items-center">
+              <MapPin height={"17px"} /> Distance info
+            </p>
+            <p>1.5 year</p>
+          </div>
         </div>
       </div>
     </div>
@@ -154,14 +144,6 @@ export function OffspringGeneratorModal({
     setIsLoading(true);
     setResultImageUrl(null);
 
-    // test code
-    // setTimeout(() => {
-    //   setResultImageUrl("/icon-512.png");
-    //   setIsLoading(false);
-    // }, 1000);
-
-    // return;
-
     try {
       const response = await fetch("/api/ai/offspring", {
         method: "POST",
@@ -191,14 +173,8 @@ export function OffspringGeneratorModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div
-        style={{
-          maxHeight: "100vh",
-          overflowY: "auto",
-        }}
-        className="bg-white rounded-lg shadow-lg w-11/12 max-w-2xl p-6 relative">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-2xl p-6 relative">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
@@ -259,6 +235,18 @@ export function OffspringGeneratorModal({
                 {imageBUrl ? "Change" : "Select"} Image B
               </button>
             )}
+            {/* <img
+              src={imageBUrl ?? undefined} // TODO show placeholder component if null
+              alt="Parent B"
+              className="w-32 h-32 object-cover rounded border cursor-pointer"
+              onClick={() => set_show_popup_image_selector(true)}
+            />
+            <button
+              className="mt-2 text-blue-500 underline"
+              onClick={() => set_show_popup_image_selector(true)}
+            >
+              {imageBUrl ? "Change" : "Select"} Image B
+            </button> */}
           </div>
         </div>
 
@@ -284,6 +272,13 @@ export function OffspringGeneratorModal({
               {isLoading ? "Generating..." : "Generate Offspring"}
             </button>
           </div>
+          {/* <button
+            onClick={handleGenerate}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            disabled={isLoading}
+          >
+            {isLoading ? "Generating..." : "Generate Offspring"}
+          </button> */}
 
           {resultImageUrl && (
             <div className="mt-4">
@@ -291,7 +286,7 @@ export function OffspringGeneratorModal({
               <img
                 src={resultImageUrl}
                 alt="Offspring"
-                className="w-full rounded" // TODO set max height to fill remaining space
+                className="w-full rounded"
               />
             </div>
           )}
@@ -320,7 +315,7 @@ export default function Matching() {
 
     if (access_token == null) {
       console.error("Access token is null, cannot store matching record");
-      // navigate("/login");
+      navigate("/login");
       return;
     }
 
@@ -376,13 +371,13 @@ export default function Matching() {
     }
 
     async function fetchMatchingPets() {
-      let retval = await api_pets_matching(access_token!);
+      const retval = await api_pets_matching(access_token!);
 
       console.debug(retval);
 
       if (retval.success) {
         try {
-          let pet_list = retval.data.pets;
+          const pet_list = retval.data.pets;
           setPetInfoList(pet_list);
           console.log("Fetched matching pets:", pet_list);
         } catch (error) {
@@ -398,7 +393,7 @@ export default function Matching() {
     }
 
     fetchMatchingPets();
-  }, []);
+  }, [access_token, navigate]);
 
   if (currentIndex >= pet_info_list.length) {
     // TODO call API to get more pets
@@ -425,7 +420,7 @@ export default function Matching() {
     //     <pre>{JSON.stringify(pet_info_list, null, 4)}</pre>
     // </div>
 
-    <div className="min-h-screen bg-gray-100">
+    <div id='matching_root_container'>
       {/* Offspring Modal */}
       {showOffspringModal && currentPetForOffspring && (
         <OffspringGeneratorModal
@@ -433,18 +428,12 @@ export default function Matching() {
           onClose={() => setShowOffspringModal(false)}
         />
       )}
+      {/* <div className="mb-6">
+        <p className="font-medium text-neutral-950 text-2xl">Hồ sơ thú cưng</p>
+      </div> */}
 
-      <div className="container mx-auto px-4 py-6 h-screen flex flex-col">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-3xl text-purple-600">SwipeApp</h1>
-          <p className="text-gray-600">
-            {pet_info_list.length - currentIndex} profiles remaining
-          </p>
-        </div>
-
-        {/* Card Area */}
-        <div className="flex-1 max-w-md mx-auto w-full relative">
+      <div className="flex flex-col items-center">
+        <div className="relative w-full max-w-md h-[60vh] mb-8">
           {/* Stack Effect - Show next cards behind */}
           {pet_info_list
             .slice(currentIndex, currentIndex + 3)
@@ -462,47 +451,42 @@ export default function Matching() {
                 {index === 0 ? (
                   <SwipeCard profile={profile} onSwipe={handleSwipe} />
                 ) : (
-                  <div className="absolute inset-4 bg-white rounded-2xl shadow-lg">
+                  <div className="absolute inset-0 bg-white rounded-2xl shadow-lg overflow-hidden">
                     <img
                       src={profile.profile_image_url ?? undefined}
                       alt={profile.profile_image_url ?? "No Image"}
-                      className="w-full h-3/5 object-cover rounded-t-2xl"
+                      className="w-full h-3/5 object-cover"
                     />
                     <div className="p-4">
-                      <h3>{profile.name}</h3>
+                      <h3 className="text-lg font-semibold">{profile.name}</h3>
                     </div>
                   </div>
                 )}
               </div>
             ))}
         </div>
+      </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-center space-x-8 mt-6">
-          <button
-            onClick={() => handleButtonSwipe("left")}
-            className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center text-2xl border-2 border-red-200 hover:border-red-400"
-          >
-            ❌
-          </button>
-          <button
-            onClick={() => handleOpenOffsprintModel()}
-            className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center text-2xl border-2 border-red-200 hover:border-red-400"
-          >
-            ✨
-          </button>
-          <button
-            onClick={() => handleButtonSwipe("right")}
-            className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center text-2xl border-2 border-green-200 hover:border-green-400"
-          >
-            ❤️
-          </button>
-        </div>
-
-        {/* Instructions */}
-        <div className="text-center mt-4 text-gray-600">
-          <p>Swipe or drag cards left/right</p>
-        </div>
+      {/* Action Buttons */}
+      <div className="flex justify-center items-center gap-8 mb-4">
+        <button
+          onClick={() => handleButtonSwipe("left")}
+          className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center text-2xl transition-all"
+        >
+          <CrossIcon />
+        </button>
+        <button
+          onClick={() => handleOpenOffsprintModel()}
+          className="p-5 bg-[#FFBF38] rounded-full shadow-lg flex items-center justify-center text-2xl transition-all"
+        >
+          <StarIcon />
+        </button>
+        <button
+          onClick={() => handleButtonSwipe("right")}
+          className="w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center text-2xl transition-all"
+        >
+          <RedHeartIcon />
+        </button>
       </div>
     </div>
   );

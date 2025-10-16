@@ -15,8 +15,8 @@ const OnBoarding = () => {
       return;
     }
   }, [access_token, nav]);
+
   const handleNext = () => {
-    console.log("object");
     if (index < onBoardingData.length - 1) {
       setIndex((prev) => prev + 1);
     } else {

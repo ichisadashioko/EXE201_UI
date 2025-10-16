@@ -5,14 +5,16 @@ import PetDetail from "../pages/pets/PetDetail";
 import Signup from "../pages/Signup";
 import Home from "../pages/users/Home";
 import MainLayout from "../components/layout/MainLayout";
-// import Loading from "../pages/Loading";
 import OnBoarding from "../pages/OnBoarding";
 import Login from "../pages/Login";
-import ChatView from "../pages/users/ChatView";
+import Profile from "../pages/Profile";
+import Connect from "../pages/Connect";
+import Chat from "../pages/Chat";
 import SamplePayment from "../pages/users/SamplePayment";
 import AdminLoginPage from "../pages/admin/login";
 import AdminHomePage from "../pages/admin/home";
 import VerifyEmail from "../pages/utils/VerifyEmail";
+import ChatView from "../pages/users/ChatView";
 
 interface Route {
   path: string;
@@ -37,7 +39,7 @@ export const routes: Route[] = [
     layout: null,
   },
   {
-    path: "/register",
+    path: "/signup",
     component: Signup,
     layout: null,
   },
@@ -45,6 +47,21 @@ export const routes: Route[] = [
   {
     path: "/home",
     component: Home,
+    layout: MainLayout,
+  },
+  {
+    path: "/connect",
+    component: Connect,
+    layout: MainLayout,
+  },
+  {
+    path: "/chat",
+    component: Chat,
+    layout: MainLayout,
+  },
+  {
+    path: "/profile",
+    component: Profile,
     layout: MainLayout,
   },
   {
@@ -65,12 +82,12 @@ export const routes: Route[] = [
   {
     path: "/matching",
     component: Matching,
-    // layout: MainLayout,
+    layout: MainLayout,
   },
   {
     path: "/premium",
     component: SamplePayment,
-    // layout: MainLayout,
+    layout: MainLayout,
   },
   {
     path: "/admin/login",
@@ -88,15 +105,7 @@ export const routes: Route[] = [
     // layout: MainLayout,
   },
   // {
-  //   path: "/matching/figma",
-  //   component: FigmaMatchingApp,
-  // },
-  // {
   //   path: "/matching/users",
   //   component: UsersMatchListView,
-  // },
-  // {
-  //   path: "/chat/:userId",
-  //   component: ChatView,
   // },
 ];

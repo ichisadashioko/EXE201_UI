@@ -1,57 +1,48 @@
 import { useEffect, useState } from "react";
 import {
   api_get_user_profile,
-  api_get_matches,
+  // api_get_matches,
   getAccessToken,
-  api_update_display_name,
+  type api_get_user_profile_Pet,
+  type api_get_user_profile_UserProfile,
+  // api_update_display_name,
 } from "../../authentication";
 // import { useNavigate } from "react-router";
-import UsersMatchListView from "../../pages/matching/UsersMatchListView";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { PlusIcon } from "../../components/icon/PlusIcon";
+import { Search } from "lucide-react";
+import { NextICon } from "../../components/icon/NextICon";
 
-// Define the interface for a single Pet
-interface Pet {
-  id: number;
-  name: string;
-  description: string;
-  profile_image_id: number | null;
-  profile_image_url: string | null;
-  created_at: number;
-}
+const PetsCard = ({ pet }: { pet: api_get_user_profile_Pet }) => {
+  return (
+    <Link to={`/pets/${pet.id}`} className="relative inline-block h-[220px] ">
+      <img
+        src={
+          pet.profile_image_url
+            ? pet.profile_image_url
+            : `/assets/default/cat.svg`
+        }
+        alt={pet.name}
+        className="w-[50vw] h-[220px] object-cover rounded-md"
+      />
 
-// Define the interface for the User Profile, which contains an array of Pets
-interface UserProfile {
-  id: number;
-  name: string | null;
-  is_guest: boolean;
-  created_at: number;
-  pets: Pet[];
-}
+      {/* Gradient overlay */}
+      <div className="absolute inset-0 rounded-md bg-gradient-to-t from-[#000148]/70 via-[#000148]/30 to-transparent" />
 
-// .Select(obj => new
-// {
-//     id = obj.Id,
-//     is_guest = obj.IsGuest,
-//     created_at = obj.CreatedAt,
-//     pets = obj.Pets.Select(pet => new
-//     {
-//         id = pet.PetId,
-//         name = pet.Name,
-//         description = pet.Description,
-//         profile_image_id = pet.ProfilePictureId,
-//         profile_image_url = ((pet.ProfilePicture == null) ? null : pet.ProfilePicture.Url),
-//         //species = pet.Species,
-//         //breed = pet.Breed,
-//         //age = pet.Age,
-//         //bio = pet.Bio,
-//         created_at = pet.CreatedAt,
-//     }).ToList(),
-// })
+      {/* Text */}
+      <div className="absolute bottom-2  text-white px-2 py-1 flex w-full justify-between align-middle items-center">
+        <div>
+          <p className="text-xl">{pet.name}</p>
+        </div>
+        <Link to={`/pets/${pet.id}`}>
+          <NextICon />
+        </Link>
+      </div>
+    </Link>
+  );
+};
 
-// This component now takes the list of pets as a prop and renders them
-function PetList({ pets }: { pets: Pet[] }) {
-  const navigate = useNavigate();
-
+function PetList({ pets }: { pets: api_get_user_profile_Pet[] }) {
   if (pets.length === 0) {
     return (
       <div>
@@ -62,61 +53,30 @@ function PetList({ pets }: { pets: Pet[] }) {
   }
 
   return (
-    <div>
-      <h2>Your Pets</h2>
-      <ul
-        style={{
-          // border: "1px solid #f00",
-        }}
-      >
-        {pets.map((pet) => (
-          <li
-            key={pet.id}
-            onClick={() => navigate(`/pets/${pet.id}`)}
-            style={{
-              cursor: "pointer",
-              marginBottom: "10px",
-              listStyle: "none",
-              // border: "1px solid #0f0",
-            }}
-          >
-            {pet.profile_image_url && (
-              <img
-                src={pet.profile_image_url}
-                alt={pet.name}
-                style={{
-                  width: "50px",
-                  height: "50px",
-                  marginRight: "10px",
-                  verticalAlign: "middle",
-                  borderRadius: "5px",
-                }}
-              />
-            )}
-            <span>{pet.name}</span>
-          </li>
-        ))}
-      </ul>
+    <div className="grid h-[68vh] overflow-auto grid-cols-2 gap-4">
+      {pets.map((pet) => (
+        <PetsCard key={pet.id} pet={pet} />
+      ))}
     </div>
   );
-}
+};
 
 export default function Home() {
   // TODO fetch user profile and display user name
   // const [user, setUser] =
   // let [tmp_user_profile_json_obj, set_tmp_user_profile_json_obj] = useState<any>(null);
 
-  const [user_profile, set_user_profile] = useState<UserProfile | null>(null);
+  const [user_profile, set_user_profile] = useState<api_get_user_profile_UserProfile | null>(null);
   const navigate = useNavigate();
   const access_token = getAccessToken();
-  const [matches, set_matches] = useState([]);
-  const [isEditingName, setIsEditingName] = useState(false);
-  const [displayName, setDisplayName] = useState("");
+  // const [isEditingName, setIsEditingName] = useState(false);
+  // const [displayName, setDisplayName] = useState("");
+  const [searchPet, setSearchPet] = useState("");
+  const [searchPetList, setSearchPetList] = useState<api_get_user_profile_Pet[]>([]);
 
   useEffect(() => {
     if (access_token === null) {
-      console.log("Access token is null, redirecting to login page");
-      navigate("/login");
+      navigate("/");
       return; // Return early
     }
 
@@ -127,8 +87,9 @@ export default function Home() {
         if (user_profile_response.success) {
           // Assuming the API response structure is { success: true, data: { user: { ... } } }
           const user_profile_data = user_profile_response.data
-            .user as UserProfile;
+            .user as api_get_user_profile_UserProfile;
           set_user_profile(user_profile_data);
+          setSearchPetList(user_profile_data.pets);
         } else {
           console.error(
             "Failed to fetch user profile:",
@@ -146,47 +107,48 @@ export default function Home() {
         navigate("/login");
         return;
       }
-
-      try {
-        const matches_response = await api_get_matches(access_token);
-        console.debug(matches_response);
-        if (matches_response.success) {
-          // Handle matches data if needed
-          set_matches(matches_response.data.matches);
-        } else {
-          console.error("Failed to fetch matches:", matches_response.message);
-        }
-      } catch (error) {
-        console.error(error);
-      }
     };
 
     load_data();
   }, [access_token, navigate]); // Add dependencies to prevent potential stale closures
 
-  const handleSaveName = async () => {
-    if (!access_token || !user_profile) return;
-    try {
-      const response = await api_update_display_name(access_token, displayName);
-      if (response.success) {
-        set_user_profile({ ...user_profile, name: displayName });
-        setIsEditingName(false);
-      } else {
-        alert(`Failed to update name: ${response.message}`);
-      }
-    } catch (error) {
-      console.error("Error updating name:", error);
-      alert("An error occurred while updating your name.");
+  useEffect(() => {
+    if (!user_profile?.pets) return;
+
+    if (searchPet) {
+      const filtered = user_profile.pets.filter((pet) =>
+        pet.name.toUpperCase().includes(searchPet.toUpperCase())
+      );
+      setSearchPetList(filtered);
+    } else {
+      setSearchPetList(user_profile.pets);
     }
-  };
+  }, [searchPet, user_profile?.pets]);
+
+  // const handleSaveName = async () => {
+  //   if (!access_token || !user_profile) return;
+  //   try {
+  //     const response = await api_update_display_name(access_token, displayName);
+  //     if (response.success) {
+  //       set_user_profile({ ...user_profile, name: displayName });
+  //       setIsEditingName(false);
+  //     } else {
+  //       alert(`Failed to update name: ${response.message}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating name:", error);
+  //     alert("An error occurred while updating your name.");
+  //   }
+  // };
+
   // Show a loading message while the user profile is being fetched
   if (!user_profile) {
     return <div>Loading your profile...</div>;
   }
 
   return (
-    <div>
-      {isEditingName ? (
+    <section className="flex flex-col h-full gap-5 justify-between">
+      {/* {isEditingName ? (
         <div>
           <input
             type="text"
@@ -217,33 +179,30 @@ export default function Home() {
             (edit)
           </span>
         </h1>
-      )}
+      )} */}
+      <div>
+        <p className="font-medium text-neutral-950 text-2xl">Trang chủ</p>
+      </div>
+      <div className="relative w-full">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <input
+          type="text"
+          placeholder="Tìm kiếm"
+          value={searchPet}
+          onChange={(e) => setSearchPet(e.target.value)}
+          className="w-full pl-10 pr-4 py-3 border border-[#454699] rounded-3xl focus:ring-2 focus:ring-[#454699] focus:outline-none"
+        />
+      </div>
 
-      {/* Render the PetList component with the user's pets */}
-      <PetList pets={user_profile.pets} />
-
-      {/* Buttons for navigation */}
-      <button onClick={() => navigate("/pets/create")}>Create New Pet</button>
-      <button
-        onClick={() => {
-          console.log("matching clicked");
-          navigate("/matching");
-        }}
-      >
-        Matching
-      </button>
-
-      {user_profile ? (
-        <div id="match_list_container">
-          <UsersMatchListView
-            me={{
-              id: user_profile.id,
-              name: user_profile.name || null,
-            }}
-            matches={matches}
-          />
-        </div>
-      ) : null}
-    </div>
+      <div className="flex justify-between">
+        <p className="font-medium text-neutral-950 text-xl">Pet của tôi</p>
+        <Link to={"/pets/create"}>
+          <PlusIcon />
+        </Link>
+      </div>
+      <div>
+        <PetList pets={searchPetList} />
+      </div>
+    </section>
   );
 }
