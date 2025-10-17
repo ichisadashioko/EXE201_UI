@@ -45,9 +45,22 @@ const PetsCard = ({ pet }: { pet: api_get_user_profile_Pet }) => {
 function PetList({ pets }: { pets: api_get_user_profile_Pet[] }) {
   if (pets.length === 0) {
     return (
-      <div>
-        <h2>Your Pets</h2>
-        <p>You haven't created any pets yet.</p>
+      <div className="flex flex-col items-center justify-center gap-4 py-8">
+        {/* <img
+          src="/assets/illustrations/no-pets.svg"
+          alt="Chưa có pet"
+          className="w-40 h-40 opacity-80"
+        /> */}
+        <h2 className="text-xl font-semibold">Bạn chưa có Pet nào</h2>
+        <p className="text-center text-neutral-600 max-w-md">
+          Tạo hồ sơ pet đầu tiên để quản lý thông tin, hình ảnh và kết nối với cộng đồng yêu thú cưng.
+        </p>
+        <Link to="/pets/create" className="mt-3">
+          <button className="inline-flex items-center gap-2 bg-[#454699] text-white px-4 py-2 rounded-3xl shadow-sm hover:brightness-110">
+            <PlusIcon color="#fff" />
+            <span>Tạo Pet mới</span>
+          </button>
+        </Link>
       </div>
     );
   }
@@ -147,7 +160,7 @@ export default function Home() {
   }
 
   return (
-    <section className="flex flex-col h-full gap-5 justify-between">
+    <section className="flex flex-col h-full gap-5">
       {/* {isEditingName ? (
         <div>
           <input

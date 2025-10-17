@@ -38,7 +38,43 @@ export const storeAccessToken = (token: string) => {
 // import createClient from "openapi-fetch";
 
 // const client = createClient<paths>();
+export async function api_resend_verification(email: string) {
+  try {
+    const response_obj = await fetch(`/api/users/resend-verification`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
 
+    const data = await response_obj.json();
+
+    if (response_obj.ok) {
+      return {
+        success: true,
+        status_code: response_obj.status,
+        data: data, // TODO define type
+        message: "OK",
+      };
+    } else {
+      return {
+        success: false,
+        status_code: response_obj.status,
+        data: data,
+        message: "failed to resent verification",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      status_code: null,
+      data: null,
+      message: `An error occurred: ${error}`,
+      error: error,
+    };
+  }
+}
 export async function api_login_with_email(email: string, password: string) {
   try {
     // API_TYPES.paths
@@ -56,8 +92,9 @@ export async function api_login_with_email(email: string, password: string) {
       body: JSON.stringify({ email, password }),
     });
 
+    const data = await response_obj.json();
+
     if (response_obj.ok) {
-      const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
@@ -68,7 +105,7 @@ export async function api_login_with_email(email: string, password: string) {
       return {
         success: false,
         status_code: response_obj.status,
-        data: await response_obj.text(),
+        data: data,
         message: "Failed to api_login_with_email",
       };
     }
@@ -670,6 +707,7 @@ const api = {
   api_get_pet_info,
   api_upload_pet_image,
   api_PullAllImageDataForPetBSelection,
+  api_resend_verification,
 };
 
 export default api;

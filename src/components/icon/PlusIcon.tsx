@@ -1,4 +1,10 @@
-export const PlusIcon = () => {
+type Props = {
+  className?: string;
+  // size?: number | string;
+  color?: string;
+};
+
+export const PlusIcon = ({ className = "", color }: Props) => {
   return (
     <svg
       width="32"
@@ -6,6 +12,8 @@ export const PlusIcon = () => {
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      stroke={color ?? "currentColor"}
+      className={className}
     >
       <rect x="0.5" y="0.5" width="31" height="31" rx="15.5" stroke="#454699" />
       <path

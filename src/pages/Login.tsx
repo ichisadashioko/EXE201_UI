@@ -9,7 +9,23 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSuccess, setIsSuccess] = useState(0);
+  const [verificationEmail, setVerificationEmail] = useState("");
   // const navigate = useNavigate();
+
+  const handleResendVerification = async () => {
+    try {
+      // Replace with the actual function name in your api module, e.g. api.resendVerification or api.api_resend_verification
+      const resp = await api.api_resend_verification(verificationEmail);
+      if (resp && resp.success) {
+        alert("Verification email resent. Please check your inbox.");
+      } else {
+        alert(`Could not resend verification: ${resp?.message || resp?.status_code || "unknown error"}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error resending verification email.");
+    }
+  };
 
   const handleSubmit = async () => {
     // event.preventDefault();
@@ -29,6 +45,17 @@ const Login = () => {
           console.debug("Access Token:", access_token);
           setIsSuccess(1);
         } else {
+          if (retval.status_code === 401) {
+            if (retval.data != null) {
+              if (retval.data.ui_code === 'VERIFICATION_REQUIRED') {
+                // show verify-email UI
+                setVerificationEmail(email);
+                setIsSuccess(2);
+                return;
+              }
+            }
+          }
+
           const error_message = `Login failed: ${retval.status_code} ${retval.message} - ${retval.data}`;
           console.error(error_message);
           alert(error_message);
@@ -116,11 +143,11 @@ const Login = () => {
             </Link>
           </div>
           <Button label="Đăng nhập" onClick={handleSubmit} />
-          <div className="flex justify-between">
+          {/* <div className="flex justify-between">
             <span className="border-b border-neutral-500 w-1/4 h-1/2"></span>
             <p className="text-neutral-500">Hoặc đăng nhập với</p>
             <span className="border-b border-neutral-500 w-1/4 h-1/2"></span>
-          </div>
+          </div> */}
           <div className="text-center">
             <p>
               Bạn chưa có tài khoản?{" "}
@@ -133,6 +160,27 @@ const Login = () => {
           </div>
         </div>
       )}
+
+      {isSuccess === 2 && (
+        <div className="p-5 w-full h-[70vh] flex flex-col justify-center items-center gap-4">
+          <Logo />
+          <h2 className="text-xl font-semibold">Xác minh email</h2>
+          <p className="text-center">
+            Một liên kết xác thực đã được gửi tới <strong>{verificationEmail}</strong>. Vui lòng kiểm tra hộp thư đến (và spam).
+          </p>
+          <div className="flex gap-3">
+            <Button label="Đã xác minh — Tiếp tục" onClick={() => {
+              // TODO reload login page
+              // replace hard reload with a soft reset so UI shows the login form again
+              setIsSuccess(0);
+              setPassword("");
+            }} />
+            <Button label="Gửi lại email xác minh" onClick={handleResendVerification} />
+          </div>
+          <p className="text-sm text-neutral-500">Nếu bạn không nhận được email, kiểm tra thư rác hoặc liên hệ với bộ phận hỗ trợ.</p>
+        </div>
+      )}
+
       {isSuccess === 1 ? (
         <Success redirect="/home" text="Đăng nhập thành công" />
       ) : (
