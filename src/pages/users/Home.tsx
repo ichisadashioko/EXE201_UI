@@ -98,6 +98,11 @@ export default function Home() {
         const user_profile_response = await api_get_user_profile(access_token);
         console.debug(user_profile_response);
         if (user_profile_response.success) {
+          if ((user_profile_response.data == null) || (user_profile_response.data.user == null)) {
+            console.error("User profile data is null");
+            // TODO
+            return;
+          }
           // Assuming the API response structure is { success: true, data: { user: { ... } } }
           const user_profile_data = user_profile_response.data
             .user as api_get_user_profile_UserProfile;

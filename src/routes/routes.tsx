@@ -15,6 +15,7 @@ import AdminLoginPage from "../pages/admin/login";
 import AdminHomePage from "../pages/admin/home";
 import VerifyEmail from "../pages/utils/VerifyEmail";
 import ChatView from "../pages/users/ChatView";
+import EditProfile from "../pages/EditProfile";
 
 interface Route {
   path: string;
@@ -103,6 +104,11 @@ export const routes: Route[] = [
     path: "/verify",
     component: VerifyEmail,
     // layout: MainLayout,
+  },
+  {
+    path: "/profile/edit",
+    component: EditProfile,
+    layout: MainLayout,
   },
   // {
   //   path: "/matching/users",

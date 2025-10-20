@@ -339,6 +339,85 @@ export async function api_upload_pet_image(
     };
   }
 }
+
+export async function api_user_update_extra_info(token: string, extra_info_json: string) {
+  try {
+    const response_obj = await fetch(`/api/users/update_info`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        extra_info_dict: extra_info_json,
+      }),
+    });
+    let data = await response_obj.json();
+    if (response_obj.ok) {
+      return {
+        success: true,
+        status_code: response_obj.status,
+        data: data, // TODO define type
+        message: "OK",
+      };
+    } else {
+      return {
+        success: false,
+        status_code: response_obj.status,
+        data: data,
+        message: "failed to update extra info",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      status_code: null,
+      data: null,
+      message: `An error occurred: ${error}`,
+      error: error,
+    };
+  }
+}
+
+export async function api_user_set_profile_picture(token: string, image_id: number) {
+  try {
+    const response_obj = await fetch(`/api/users/me/profile-picture`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        image_id: image_id,
+      }),
+    });
+    let data = await response_obj.json();
+    if (response_obj.ok) {
+      return {
+        success: true,
+        status_code: response_obj.status,
+        data: data, // TODO define type
+        message: "OK",
+      };
+    } else {
+      return {
+        success: false,
+        status_code: response_obj.status,
+        data: data,
+        message: "failed to set profile picture",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      status_code: null,
+      data: null,
+      message: `An error occurred: ${error}`,
+      error: error,
+    };
+  }
+}
+
 export async function api_upload_user_image(token: string, image_file: File) {
   try {
     const form_data = new FormData();
@@ -537,6 +616,8 @@ export interface api_get_user_profile_UserProfile {
   name: string | null;
   is_guest: boolean;
   created_at: number;
+  extra_info_json: string | null;
+  profile_image_url: string | null;
   pets: api_get_user_profile_Pet[];
 }
 
@@ -550,8 +631,11 @@ export async function api_get_user_profile(token: string) {
       },
     });
 
+    const data: {
+      message: string,
+      user: api_get_user_profile_UserProfile,
+    } = await response_obj.json();
     if (response_obj.ok) {
-      const data = await response_obj.json();
       return {
         success: true,
         status_code: response_obj.status,
@@ -562,7 +646,7 @@ export async function api_get_user_profile(token: string) {
       return {
         success: false,
         status_code: response_obj.status,
-        data: await response_obj.text(),
+        data: data,
         message: "Failed to retrieve user profile",
       };
     }

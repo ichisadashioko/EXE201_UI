@@ -1,5 +1,5 @@
 export interface PetImageInfo {
-    id: string;
+    id: number;
     url: string;
     created_ts: number;
 }

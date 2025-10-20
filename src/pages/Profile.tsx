@@ -26,6 +26,12 @@ const Profile = () => {
     }
     const fetchUserProfile = async () => {
       const response = await api_get_user_profile(access_token);
+      if ((response.data == null) || (response.data.user == null)) {
+        console.error("User profile data is null");
+        navigate("/");
+        return;
+      }
+
       setUser(response.data.user);
     };
     fetchUserProfile();
@@ -65,7 +71,7 @@ const Profile = () => {
 
       <div className="bg-white p-4 rounded-2xl ">
         <Link
-          to={""}
+          to={"/profile/edit"}
           className="flex justify-between border-b border-neutral-500 py-3"
         >
           <p className="flex gap-2 items-center">
