@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router'; // Assuming you use react-router
+import { useParams } from 'react-router';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { getAccessToken } from '../../authentication'; // You need a function to get the JWT token
+import { getAccessToken, getUserIdFromToken } from '../../authentication';
 
 interface ChatMessage {
     id: number;
@@ -12,28 +12,36 @@ interface ChatMessage {
 }
 
 export default function ChatView() {
-    console.debug("Rendering ChatView component");
     const { chatThreadId } = useParams<{ chatThreadId: string }>();
     const [connection, setConnection] = useState<HubConnection | null>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [newMessage, setNewMessage] = useState('');
-    const latestMessages = useRef(messages); // Ref to get latest state in callbacks
+    const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+    const latestMessages = useRef(messages);
+    const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
     latestMessages.current = messages;
 
+    // Effect for scrolling to the bottom
     useEffect(() => {
-        // TODO refactor this code into authentication.ts
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
+    useEffect(() => {
+        const token = getAccessToken();
+        setCurrentUserId(getUserIdFromToken(token));
+
         // Fetch message history
         fetch(`/api/chat/${chatThreadId}/messages`, {
-            headers: { 'Authorization': `Bearer ${getAccessToken()}` }
+            headers: { 'Authorization': `Bearer ${token}` }
         })
             .then(res => res.json())
-            .then(data => setMessages(data.messages));
+            .then(data => setMessages(data.messages || []));
 
         // Setup SignalR connection
         const newConnection = new HubConnectionBuilder()
             .withUrl("/chathub", {
-                accessTokenFactory: () => getAccessToken() || ''
+                accessTokenFactory: () => token || ''
             })
             .withAutomaticReconnect()
             .build();
@@ -89,16 +97,33 @@ export default function ChatView() {
             flexDirection: 'column',
             height: '100vh'
         }}>
-            <div style={{ flexGrow: 1, overflowY: 'auto', padding: '10px' }}>
-                {messages.map(msg => (
-                    <div key={msg.id} style={{ marginBottom: '10px' }}>
-                        {(msg.sender_name == null) ? (
-                            <strong>User {msg.senderUserId}:</strong>
-                        ) : (
-                            <strong>{msg.sender_name}:</strong>
-                        )} {msg.content}
-                    </div>
-                ))}
+            <div style={{ flexGrow: 1, overflowY: 'auto', padding: '10px', display: 'flex', flexDirection: 'column' }}>
+                {messages.map(msg => {
+                    const isCurrentUser = msg.senderUserId === currentUserId;
+                    
+                    return (
+                        <div key={msg.id} style={{
+                            display: 'flex',
+                            justifyContent: isCurrentUser ? 'flex-end' : 'flex-start',
+                            marginBottom: '10px'
+                        }}>
+                            <div style={{
+                                maxWidth: '60%',
+                                padding: '10px 15px',
+                                borderRadius: '20px',
+                                background: isCurrentUser ? '#007bff' : '#e9e9eb',
+                                color: isCurrentUser ? 'white' : 'black',
+                                wordWrap: 'break-word'
+                            }}>
+                                <strong style={{ fontSize: '0.8rem', display: 'block', marginBottom: '4px' }}>
+                                    {msg.sender_name || `User ${msg.senderUserId}`}
+                                </strong>
+                                {msg.content}
+                            </div>
+                        </div>
+                    );
+                })}
+                <div ref={messagesEndRef} />
             </div>
             <form onSubmit={sendMessage} style={{ display: 'flex', padding: '10px', borderTop: '1px solid #ccc' }}>
                 <input

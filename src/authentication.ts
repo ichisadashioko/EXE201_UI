@@ -38,6 +38,78 @@ export const storeAccessToken = (token: string) => {
 // import createClient from "openapi-fetch";
 
 // const client = createClient<paths>();
+export function getUserIdFromToken(token: string | null): number | null {
+  if (!token) return null;
+  try {
+    // The token is in three parts: header, payload, signature, separated by dots.
+    // We need the payload, which is the second part.
+    const payloadBase64 = token.split('.')[1];
+    if (!payloadBase64) return null;
+
+    // Decode the base64 string
+    const payloadJson = atob(payloadBase64);
+    const payload = JSON.parse(payloadJson);
+    console.debug(payload);
+
+    // Extract the user ID. Your backend uses a custom claim type that likely
+    // serializes to "userId" or "sub". Adjust the key if necessary.
+    const userId = payload.user_id;
+    return userId ? parseInt(userId, 10) : null;
+
+  } catch (e) {
+    console.error("Failed to parse JWT:", e);
+    return null;
+  }
+}
+export interface api_get_chat_threads_ChatThread {
+  thread_id: number;
+  other_user_id: number;
+  other_user_name: string | null;
+  other_user_profile_picture_url: string | null,
+}
+
+export interface api_get_chat_threads_GetChatThreadsResponse {
+  chat_threads: api_get_chat_threads_ChatThread[];
+}
+
+export async function api_get_chat_threads(token: string) {
+  try {
+    const response_obj = await fetch(`/api/chat/list`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data: api_get_chat_threads_GetChatThreadsResponse = await response_obj.json();
+
+    if (response_obj.ok) {
+      return {
+        success: true,
+        status_code: response_obj.status,
+        data: data,
+        message: "Chat threads retrieved successfully",
+      };
+    } else {
+      return {
+        success: false,
+        status_code: response_obj.status,
+        data: data,
+        message: "Failed to retrieve chat threads",
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      status_code: null,
+      data: null,
+      message: `An error occurred: ${error}`,
+      error: error,
+    };
+  }
+}
+
 export async function api_resend_verification(email: string) {
   try {
     const response_obj = await fetch(`/api/users/resend-verification`, {
